@@ -25,7 +25,7 @@ const konekcioniString =
 mongoose.connect(konekcioniString, { useNewUrlParser: true });
 mongoose.connection.once("open", () => {
   console.log(
-    "Konektovan sa bazom podataka : " + process.env.CONNECTION_STRING
+    "Konektovan sa bazom podataka : " + konekcioniString
   );
 });
 app.use(cors());
@@ -78,3 +78,28 @@ app.get("/vratiigru/:id", async function (req, res) {
 
 //5ff9ed001b2ede08cc345109
 //http://localhost:3000/vratiigru/5ff9ed001b2ede08cc345109
+
+app.get("/vratiucesnikeigre/:id", async function (req, res) {
+  let igra = await igraModel.findById(req.params.id);
+  if (igra) {
+    console.log(igra.get("igraci"));
+    res.json(igra.get("igraci"));
+  } else {
+    res.json("");
+  }
+});
+//5ff9f27993d63e1600fee0ab
+//http://localhost:3000/vratiucesnikeigre/5ff9f27993d63e1600fee0ab
+
+app.get("/vratipotezeigre/:id", async function (req, res) {
+  let igra = await igraModel.findById(req.params.id);
+  if (igra) {
+    console.log(igra.get("karte"));
+    res.json(igra.get("karte"));
+  } else {
+    res.json("");
+  }
+});
+
+//5ffb3e6611355a2cdcce71fb
+//http://localhost:3000/vratipotezeigre/5ffb3e6611355a2cdcce71fb
