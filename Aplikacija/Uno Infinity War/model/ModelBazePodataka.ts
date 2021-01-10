@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const Schema = mongoose.Schema;
 
 const kartaSchema = new Schema({
@@ -18,12 +19,34 @@ const igracSchema = new Schema({
   poeni: Number,
 });
 const chatSchema = new Schema ({
-   igracIme: String, poruka: String, });
+  igracIme: String, poruka: String, });
+
 const korisnikSchema = new Schema ({
   prethodneIgre: [{id: String }], _id : String })
+
+const odigranaKartaSchema = new Schema({
+    karta: kartaSchema,
+    korisnik: korisnikSchema,
+  });
+
+const igraSchema = new Schema({
+    igraci: [igracSchema],
+    igracNaPotezu: Number,
+    trenutnaKarta: kartaSchema,
+    trenutnaBoja: String,
+    obrnutRedosled: Boolean,
+    pocalaIgra: Boolean,
+    zavrsenaIgra: Boolean,
+    brojIgraca: Number,
+    chat: [chatSchema],
+    karte: [odigranaKartaSchema],
+    datum: String,
+  });
 
 const igracModel = mongoose.model("Igrac", igracSchema);
 const kartaModel = mongoose.model("Karta", kartaSchema);
 const chatModel = mongoose.model("Chat", chatSchema);
 const korisnikModel = mongoose.model("Korisnik", korisnikSchema);
-export { igracModel, kartaModel , chatModel, korisnikModel};
+const igraModel = mongoose.model("Igra", igraSchema);
+const odigranaKartaModel = mongoose.model("OdigranaKarta", odigranaKartaSchema);
+export { igracModel, kartaModel , chatModel, korisnikModel, igraModel, odigranaKartaModel,};
