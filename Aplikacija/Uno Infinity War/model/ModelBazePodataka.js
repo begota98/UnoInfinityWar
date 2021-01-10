@@ -3,57 +3,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.playedCardModel = exports.userModel = exports.chatModel = exports.cardModel = exports.playerModel = exports.gameModel = void 0;
+exports.kartaModel = exports.igracModel = void 0;
 var mongoose_1 = __importDefault(require("mongoose"));
 var Schema = mongoose_1.default.Schema;
-var cardSchema = new Schema({
-    value: Number,
-    color: String,
-    isSpecial: Boolean,
+var kartaSchema = new Schema({
+    vrednost: Number,
+    boja: String,
+    specijalna: Boolean,
 });
-var playerSchema = new Schema({
-    cards: [cardSchema],
-    name: String,
-    index: Number,
-    playerId: String,
-    drawCard: Number,
-    canEnd: Boolean,
-    socketId: String,
-    score: Number,
+var igracSchema = new Schema({
+    karte: [kartaSchema],
+    ime: String,
+    indeks: Number,
+    idIgraca: String,
+    izvucenihKarata: Number,
+    mozeDaZavrsi: Boolean,
+    soketId: String,
+    poeni: Number,
 });
-var chatSchema = new Schema({
-    playerName: String,
-    message: String,
-});
-var userSchema = new Schema({
-    pastGames: [{ id: String }],
-    _id: String,
-});
-var playedCardSchema = new Schema({
-    card: cardSchema,
-    user: userSchema,
-});
-var gameSchema = new Schema({
-    players: [playerSchema],
-    currentPlayerTurn: Number,
-    currentCard: cardSchema,
-    currentColor: String,
-    isReversed: Boolean,
-    gameStart: Boolean,
-    numberOfPlayers: Number,
-    chat: [chatSchema],
-    cards: [playedCardSchema],
-    date: String,
-});
-var gameModel = mongoose_1.default.model("Game", gameSchema);
-exports.gameModel = gameModel;
-var playerModel = mongoose_1.default.model("Player", playerSchema);
-exports.playerModel = playerModel;
-var cardModel = mongoose_1.default.model("Card", cardSchema);
-exports.cardModel = cardModel;
-var chatModel = mongoose_1.default.model("Chat", chatSchema);
-exports.chatModel = chatModel;
-var userModel = mongoose_1.default.model("User", userSchema);
-exports.userModel = userModel;
-var playedCardModel = mongoose_1.default.model("PlayedCard", playedCardSchema);
-exports.playedCardModel = playedCardModel;
+var igracModel = mongoose_1.default.model("Igrac", igracSchema);
+exports.igracModel = igracModel;
+var kartaModel = mongoose_1.default.model("Karta", kartaSchema);
+exports.kartaModel = kartaModel;

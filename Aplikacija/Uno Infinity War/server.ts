@@ -6,7 +6,6 @@ import path from "path";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import http from "http";
-import { igraModel, korisnikModel } from "./model/ModelBazePodataka";
 
 dotenv.config();
 
