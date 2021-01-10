@@ -17,8 +17,13 @@ const igracSchema = new Schema({
   soketId: String,
   poeni: Number,
 });
+const chatSchema = new Schema ({
+   igracIme: String, poruka: String, });
+const korisnikSchema = new Schema ({
+  prethodneIgre: [{id: String }], _id : String })
 
 const igracModel = mongoose.model("Igrac", igracSchema);
 const kartaModel = mongoose.model("Karta", kartaSchema);
-
-export { igracModel, kartaModel };
+const chatModel = mongoose.model("Chat", chatSchema);
+const korisnikModel = mongoose.model("Korisnik", korisnikSchema);
+export { igracModel, kartaModel , chatModel, korisnikModel};
