@@ -59,4 +59,22 @@ app.get("/vratiigrekorisnika/:id", async function (req, res) {
     res.json("");
   }
 });
+
 //http://localhost:3000/vratiigrekorisnika/BinFicP2ttfws0JCei2kMPcL0xY2
+
+app.get("/vratiigre", async function (req, res) {
+  let igre = await igraModel.find();
+  console.log(igre);
+  res.json(igre);
+});
+
+//http://localhost:3000/vratiigre
+
+app.get("/vratiigru/:id", async function (req, res) {
+  let igra = await igraModel.findById(req.params.id);
+  console.log(igra);
+  res.json(igra);
+});
+
+//5ff9ed001b2ede08cc345109
+//http://localhost:3000/vratiigru/5ff9ed001b2ede08cc345109
