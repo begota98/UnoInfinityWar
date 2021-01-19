@@ -145,8 +145,8 @@ app.get("/vratiigru/:id", function (req, res) {
         });
     });
 });
-//5ff9ed001b2ede08cc345109
-//http://localhost:3000/vratiigru/5ff9ed001b2ede08cc345109
+//5ff9f39d8beeef1c6863a9ce
+//http://localhost:3000/vratiigru/5ff9f39d8beeef1c6863a9ce
 app.get("/vratiucesnikeigre/:id", function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var igra;
@@ -167,8 +167,8 @@ app.get("/vratiucesnikeigre/:id", function (req, res) {
         });
     });
 });
-//5ff9f27993d63e1600fee0ab
-//http://localhost:3000/vratiucesnikeigre/5ff9f27993d63e1600fee0ab
+//5ff9f39d8beeef1c6863a9ce
+//http://localhost:3000/vratiucesnikeigre/5ff9f39d8beeef1c6863a9ce
 app.get("/vratipotezeigre/:id", function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var igra;
@@ -189,5 +189,5 @@ app.get("/vratipotezeigre/:id", function (req, res) {
         });
     });
 });
-//5ffb3e6611355a2cdcce71fb
-//http://localhost:3000/vratipotezeigre/5ffb3e6611355a2cdcce71fb
+//5ff9f39d8beeef1c6863a9ce
+//http://localhost:3000/vratipotezeigre/5ff9f39d8beeef1c6863a9ce

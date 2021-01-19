@@ -22,10 +22,12 @@ var igracSchema = new Schema({
     poeni: Number,
 });
 var chatSchema = new Schema({
-    igracIme: String, poruka: String,
+    igracIme: String,
+    poruka: String,
 });
 var korisnikSchema = new Schema({
-    prethodneIgre: [{ id: String }], _id: String
+    prethodneIgre: [{ id: String }],
+    _id: String,
 });
 var odigranaKartaSchema = new Schema({
     karta: kartaSchema,
@@ -37,7 +39,7 @@ var igraSchema = new Schema({
     trenutnaKarta: kartaSchema,
     trenutnaBoja: String,
     obrnutRedosled: Boolean,
-    pocalaIgra: Boolean,
+    pocelaIgra: Boolean,
     zavrsenaIgra: Boolean,
     brojIgraca: Number,
     chat: [chatSchema],
