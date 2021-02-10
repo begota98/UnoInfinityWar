@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const Schema = mongoose.Schema;
+const Schema: any = mongoose.Schema;
 
 const kartaSchema = new Schema({
   vrednost: Number,
@@ -46,12 +46,15 @@ const igraSchema = new Schema({
   datum: String,
 });
 
-const igracModel = mongoose.model("Igrac", igracSchema);
-const kartaModel = mongoose.model("Karta", kartaSchema);
-const chatModel = mongoose.model("Chat", chatSchema);
-const korisnikModel = mongoose.model("Korisnik", korisnikSchema);
-const igraModel = mongoose.model("Igra", igraSchema);
-const odigranaKartaModel = mongoose.model("OdigranaKarta", odigranaKartaSchema);
+const igracModel = mongoose.model<any>("Igrac", igracSchema);
+const kartaModel = mongoose.model<any>("Karta", kartaSchema);
+const chatModel = mongoose.model<any>("Chat", chatSchema);
+const korisnikModel = mongoose.model<any>("Korisnik", korisnikSchema);
+const igraModel = mongoose.model<any>("Igra", igraSchema);
+const odigranaKartaModel = mongoose.model<any>(
+  "OdigranaKarta",
+  odigranaKartaSchema
+);
 export {
   igracModel,
   kartaModel,

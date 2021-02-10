@@ -6,6 +6,7 @@ import path from "path";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import http from "http";
+import socketio from "socket.io";
 import {
   igracModel,
   kartaModel,
@@ -21,17 +22,82 @@ const app = express();
 const PORT = 3000;
 const server = http.createServer(app);
 const konekcioniString =
-  "";
+  "mongodb://uno1234567890:uno12345@cluster0-shard-00-00.q10ii.mongodb.net:27017,cluster0-shard-00-01.q10ii.mongodb.net:27017,cluster0-shard-00-02.q10ii.mongodb.net:27017/baza?ssl=true&replicaSet=atlas-2rb5rr-shard-0&authSource=admin&retryWrites=true";
 mongoose.connect(konekcioniString, { useNewUrlParser: true });
 mongoose.connection.once("open", () => {
-  console.log(
-    "Konektovan sa bazom podataka : " + konekcioniString
-  );
+  console.log("Konektovan sa bazom podataka : " + konekcioniString);
 });
 app.use(cors());
+app.use(express.static("output"));
+app.use(express.static("styles"));
+const io = socketio.listen(server);
 
 server.listen(process.env.PORT || PORT, () => {
   console.log(`Server osluskuje na portu : ${process.env.PORT || PORT}`);
+});
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "pocetna.html"));
+});
+
+io.on("connection", (socket) => {
+  var id = "5ff9f39d8beeef1c6863a9ce";
+  socket.on("zapocniIgru", async (podaci) => {
+    let igra = await igraModel.findById(id);
+    let igrac = new igracModel({
+      ime: podaci.ime,
+      soketId: socket.id,
+    });
+
+    if (igra) {
+      igra.igraci.push(igrac);
+      await igra.save();
+    }
+
+    io.to(socket.id).emit("zapocetoJe", {
+      igra: igra,
+    });
+  });
+
+  socket.on("novaPoruka", async (podaci) => {
+    let igra = await igraModel.findById(id);
+    if (igra) {
+      let chat = new chatModel({
+        igracIme: podaci.ime,
+        poruka: podaci.poruka,
+      });
+      igra.chat.push(chat);
+      for (let igrac of igra.igraci) {
+        io.to(igrac.soketId).emit("stizeNovaPoruka", {
+          poruka: chat,
+        });
+      }
+    }
+  });
+
+  socket.on("odigrajPotez", async (podaci) => {
+    let igra = await igraModel.findById(id);
+    if (igra) {
+      for (let igrac of igra.igraci) {
+        io.to(igrac.soketId).emit("stizeNovPotez", {
+          karta: podaci.imeKarte,
+        });
+      }
+    }
+  });
+
+  socket.on("disconnect", async () => {
+    let igra = await igraModel.findById(id);
+    let socketid = socket.id;
+    if (igra) {
+      for (let i = 0; i <= igra.igraci.lenght - 1; i++) {
+        if (igra.igraci[i].soketId == socketid) {
+          igra.igraci.splice(i, 1);
+          break;
+        }
+      }
+    }
+  });
 });
 
 app.get("/vratikorisnike", async function (req, res) {
