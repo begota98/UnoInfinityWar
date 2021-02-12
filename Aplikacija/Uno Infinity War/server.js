@@ -47,13 +47,13 @@ var path_1 = __importDefault(require("path"));
 var mongoose_1 = __importDefault(require("mongoose"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var http_1 = __importDefault(require("http"));
-var socket_io_1 = __importDefault(require("socket.io"));
 var ModelBazePodataka_1 = require("./model/ModelBazePodataka");
+var serverKomunikacioniSloj_1 = require("./serverKomunikacioniSloj");
 dotenv_1.default.config();
 var app = express_1.default();
 var PORT = 3000;
 var server = http_1.default.createServer(app);
-var konekcioniString = "mongodb://uno1234567890:uno12345@cluster0-shard-00-00.q10ii.mongodb.net:27017,cluster0-shard-00-01.q10ii.mongodb.net:27017,cluster0-shard-00-02.q10ii.mongodb.net:27017/baza?ssl=true&replicaSet=atlas-2rb5rr-shard-0&authSource=admin&retryWrites=true";
+var konekcioniString = "mongodb://unotest123:uno123@cluster0-shard-00-00.rdocm.mongodb.net:27017,cluster0-shard-00-01.rdocm.mongodb.net:27017,cluster0-shard-00-02.rdocm.mongodb.net:27017/bazaTest?ssl=true&replicaSet=atlas-118zza-shard-0&authSource=admin&retryWrites=true";
 mongoose_1.default.connect(konekcioniString, { useNewUrlParser: true });
 mongoose_1.default.connection.once("open", function () {
     console.log("Konektovan sa bazom podataka : " + konekcioniString);
@@ -61,110 +61,13 @@ mongoose_1.default.connection.once("open", function () {
 app.use(cors_1.default());
 app.use(express_1.default.static("output"));
 app.use(express_1.default.static("styles"));
-var io = socket_io_1.default.listen(server);
 server.listen(process.env.PORT || PORT, function () {
     console.log("Server osluskuje na portu : " + (process.env.PORT || PORT));
 });
 app.get("/", function (req, res) {
     res.sendFile(path_1.default.join(__dirname, "pocetna.html"));
 });
-io.on("connection", function (socket) {
-    var id = "5ff9f39d8beeef1c6863a9ce";
-    socket.on("zapocniIgru", function (podaci) { return __awaiter(void 0, void 0, void 0, function () {
-        var igra, igrac, _i, _a, igrac_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, ModelBazePodataka_1.igraModel.findById(id)];
-                case 1:
-                    igra = _b.sent();
-                    console.log("AAAASDASDADSAD");
-                    console.log(podaci.socketId);
-                    igrac = new ModelBazePodataka_1.igracModel({
-                        ime: podaci.ime,
-                        soketId: socket.id,
-                    });
-                    console.log(igrac);
-                    if (!igra) return [3 /*break*/, 3];
-                    igra.igraci.push(igrac);
-                    return [4 /*yield*/, igra.save()];
-                case 2:
-                    _b.sent();
-                    _b.label = 3;
-                case 3:
-                    for (_i = 0, _a = igra.igraci; _i < _a.length; _i++) {
-                        igrac_1 = _a[_i];
-                        io.to(igrac_1.soketId).emit("zapocetoJe", {
-                            igra: igra,
-                        });
-                    }
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    socket.on("novaPoruka", function (podaci) { return __awaiter(void 0, void 0, void 0, function () {
-        var igra, chat, _i, _a, igrac;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, ModelBazePodataka_1.igraModel.findById(id)];
-                case 1:
-                    igra = _b.sent();
-                    if (igra) {
-                        chat = new ModelBazePodataka_1.chatModel({
-                            igracIme: podaci.ime,
-                            poruka: podaci.poruka,
-                        });
-                        igra.chat.push(chat);
-                        for (_i = 0, _a = igra.igraci; _i < _a.length; _i++) {
-                            igrac = _a[_i];
-                            io.to(igrac.soketId).emit("stizeNovaPoruka", {
-                                poruka: chat,
-                            });
-                        }
-                    }
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    socket.on("odigrajPotez", function (podaci) { return __awaiter(void 0, void 0, void 0, function () {
-        var igra, _i, _a, igrac;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, ModelBazePodataka_1.igraModel.findById(id)];
-                case 1:
-                    igra = _b.sent();
-                    if (igra) {
-                        for (_i = 0, _a = igra.igraci; _i < _a.length; _i++) {
-                            igrac = _a[_i];
-                            io.to(igrac.soketId).emit("stizeNovPotez", {
-                                karta: podaci.imeKarte,
-                            });
-                        }
-                    }
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    socket.on("disconnect", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var igra, socketid, i;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, ModelBazePodataka_1.igraModel.findById(id)];
-                case 1:
-                    igra = _a.sent();
-                    socketid = socket.id;
-                    if (igra) {
-                        for (i = 0; i <= igra.igraci.lenght - 1; i++) {
-                            if (igra.igraci[i].soketId == socketid) {
-                                igra.igraci.splice(i, 1);
-                                break;
-                            }
-                        }
-                    }
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-});
+var serverKomiSloj = serverKomunikacioniSloj_1.serverKomunikacioniSloj(server);
 app.get("/vratikorisnike", function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var korisnici;
