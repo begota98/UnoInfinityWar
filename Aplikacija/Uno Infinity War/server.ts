@@ -22,7 +22,7 @@ const app = express();
 const PORT = 3000;
 const server = http.createServer(app);
 const konekcioniString =
-  "mongodb://uno1234567890:uno12345@cluster0-shard-00-00.q10ii.mongodb.net:27017,cluster0-shard-00-01.q10ii.mongodb.net:27017,cluster0-shard-00-02.q10ii.mongodb.net:27017/baza?ssl=true&replicaSet=atlas-2rb5rr-shard-0&authSource=admin&retryWrites=true";
+  "";
 mongoose.connect(konekcioniString, { useNewUrlParser: true });
 mongoose.connection.once("open", () => {
   console.log("Konektovan sa bazom podataka : " + konekcioniString);
