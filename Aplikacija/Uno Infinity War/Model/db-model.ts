@@ -30,6 +30,8 @@ const korisnikSchema = new Schema({
 const odigranaKartaSchema = new Schema({
   karta: kartaSchema,
   korisnik: korisnikSchema,
+  imeUPartiji: String,
+  bojaPozadine: String,
 });
 
 const igraSchema = new Schema({
@@ -44,6 +46,8 @@ const igraSchema = new Schema({
   chat: [chatSchema],
   karte: [odigranaKartaSchema],
   datum: String,
+  poeniZaPobedu:Number,
+  
 });
 
 const igracModel = mongoose.model<any>("Igrac", igracSchema);
