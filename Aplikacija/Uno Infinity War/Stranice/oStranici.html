@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zxx">
+   <head>
+      <title>UNO INFINITY WAR</title>
+      <!--meta tags -->
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="keywords" content="UNO INF WAR" />
+      <link rel="shortcut icon" href="images/logo.png" />
+      <script>
+         addEventListener("load", function () {
+         	setTimeout(hideURLbar, 0);
+         }, false);
+         
+         function hideURLbar() {
+         	window.scrollTo(0, 1);
+         }
+      </script>
+      <!--booststrap-->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <!-- font-awesome icons -->
+      <link href="css/fontawesome-all.min.css" rel="stylesheet" type="text/css" media="all">
+      <!-- Nav-CSS -->	
+      <link href="css/nav.css" rel="stylesheet" type="text/css" media="all" />
+      <script src="js/modernizr.custom.js"></script>
+      <!-- banner -->	
+      <link rel="stylesheet" type="text/css" href="css/uncover.css" />
+      <!--stylesheets-->
+      <link href="css/style.css" rel='stylesheet' type='text/css' media="all">
+      <link href="https://fonts.googleapis.com/css?family=Cinzel+Decorative:400,700" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Julius+Sans+One" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
+     <link rel="stylesheet" type="text/css" href="css/main.css">
+     <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-app.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-auth.js"></script>
+     <style>
+      .buttonLikeLink {
+         font-size: 20px;
+         background: none;
+         border: none;
+         padding: 0;
+         margin: 0;
+         /*optional*/
+         font-family: arial, sans-serif;
+         /*input has OS specific font-family*/
+         color: white;
+         cursor: pointer;
+}
+   </style>
+   </head>
+   <body>
+      <div class="limiter" >
+		  <div class="container-login100" style="text-align:center">
+
+			 <!--banner-->
+			 <div >
+				 <div>
+					<div class="">
+					   <div class="">
+						  <p>
+							 <button id="trigger-overlay" type="button">
+							 <span class="fa fa-bars" aria-hidden="true"></span>
+							 </button>
+						  </p>
+					   </div>
+					   <!-- open/close -->
+					   <div class="overlay overlay-hugeinc">
+						  <button type="button" class="overlay-close">Close</button>
+						  <nav>
+							 <ul>
+                        <li><a href="pocetnaStrana" >Glavna</a></li>
+                        <li><a href="oStranici" >O igrici</a></li>
+                        <li><a href="istorijaIgara" >Istorija</a></li>
+                        <form id="logoutPgr">
+                           <li><button type="submit" class="buttonLikeLink">Logout</button></li>
+                        </form>
+							 </ul>
+						  </nav>
+					   </div>
+					</div>
+					<div class="clearfix"> </div>
+				 </div>
+				<div >
+				   <div id="naslovDIV" class="slider-up" style="width:100%">
+					  <h4 id="h4NASLOV" >UNO <span id="rotateMeID" class="fab fa-d-and-d"></span > WAR</h4>
+				   </div>
+				</div>
+			   <div class="wrap-login100">
+					<span class="login100-form-title">
+						O igri
+					</span>
+
+                    <div style="margin-bottom:15%">
+                     Uno je američka kartaška igra koja se igra na specijalno odštampanom špilu karata (Mau Mau je blizu identična igra koja se igra sa običnim kartama). Igra je originalno razvijena tokom 1971. godine, a od 1992. godine proizvodi Matel.Špil ima 108 karata. Svakih 25-oro karata je od jedne boje (crvene, zelene, žute, plave), a svaka boja ima po 2 ista ranga osim nule. Svaki rang je od nule do devetke, "Skip" (karta koja, posle onog igrača koji je bacio, sledeći preskače), "Draw Two" (sledeći igrač kupuje dve karte i ne igra) i "Reverse" (kad igrač baci kartu, menja se smer). Osim toga, špil ima po četiri "Wild" karte (kad igrač baci, menja se boja karti) i "Wild Draw Four" karte (kad igrač baci bira boji, a i sledeći kupuje četiri karte).
+					</div>
+				</div>
+			 <div class="clearfix"></div>
+		 </div>
+      </div>
+	  </div>
+      <!--//banner-->
+      <!--Footer -->   
+      <footer class="py-2">
+         <div  class="icons text-center py-md-3 pb-2">
+            <ul>
+               <li><a href="#"><span class="fab fa-facebook-f"></span></a></li>
+               <li><a href="#"><span class="fas fa-envelope"></span></a></li>
+               <li><a href="#"><span class="fas fa-rss"></span></a></li>
+               <li><a href="#"><span class="fab fa-vk"></span></a></li>
+            </ul>
+         </div>
+         <div class="footer-below text-center">
+            <p>©2021 <a target="_blank">B²J Group</a></p>
+         </div>
+      </footer>
+      <!-- //Footer -->
+      <!-- js working-->
+      <!--//js working-->
+      <!-- For-Banner -->
+      <script src="js/imagesloaded.pkgd.min.js"></script>
+      <script src="js/anime.min.js"></script>
+      <script src="js/uncover.js"></script>
+      <!-- //For-Banner -->
+      <!--nav menu-->
+      <script src="js/classie.js"></script>
+      <script src="js/demonav.js"></script>
+      <!-- //nav menu-->
+      <!-- bootstrap working-->
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <!-- // bootstrap working--> 
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+      <script>
+         const socket = io({
+            query: {
+            token: "cde",
+            },
+         });
+      </script>
+      <script src="pocetna.js"></script>
+   </body>
+</html>
