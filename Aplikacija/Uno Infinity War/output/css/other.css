@@ -1,0 +1,70 @@
+.btnShowId{
+    height: 40px;
+    position: absolute;
+    border-radius: 50%;
+    bottom: 1%;
+    right: 1%;
+}
+.divCollection{
+    display: flex;
+    flex-direction: column;
+}
+.btnStartGame{
+    margin-top: 1%;
+    height: 40px;
+    position: absolute;
+    border-radius: 50%;
+}
+#divCollectionId{
+    position: absolute;
+    left: 1%;
+    top: 1%;
+}
+.btnKick{
+    float: right;
+    margin-left: 5%;
+}
+.list-group-item{
+    display: flex;
+    justify-content: center;
+    vertical-align: middle;
+}
+.containerGame{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  
+    width: 100%;
+}
+.containerCard{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width:100%;     
+}
+.board-card{
+    text-align:center;
+    display: flex;
+    justify-content: center;
+    margin-top: 2%;
+}
+.resultTable{
+    position:absolute;
+    right: 1%;
+    top: 1%;
+}
+
+#btnEndAndDraw{
+    display: flex;
+    justify-content: center;
+}
+.gameBtn, #lblrbb1, #lblrbb2{
+    margin:5px;
+}
+.rbChecker{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4%;
+}
+.btnCommand{
+    margin: 2%;
+}
