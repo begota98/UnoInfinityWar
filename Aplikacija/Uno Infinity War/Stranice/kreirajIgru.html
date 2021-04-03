@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="initial-scale=1.0" />
+		<title>uno multiplayer</title>
+		<link rel="shortcut icon" href="images/logo.png" />
+
+		
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="images/logo.png"/>
+<!--===============================================================================================-->
+	<!-- <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css"> -->
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<!-- <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css"> -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<!-- <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css"> -->
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="css/chat.css">
+	<link rel="stylesheet" type="text/css" href="css/other.css">
+		
+		<link rel="stylesheet" href="card.css">
+		<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-auth.js"></script>
+	  </head>
+<body>
+	<div id="chatDiv" style="display: none">
+		
+		<div  class="chat_window">
+		<div class="top_menu">
+			<!-- <div class="buttons">
+				<div class="button close"></div>
+				<div class="button minimize"></div>
+				<div class="button maximize"></div>
+			</div> -->
+			<div class="title">Chat</div>
+		</div>
+			<ul class="messages"></ul>
+		<div class="bottom_wrapper clearfix">
+			<div class="message_input_wrapper">
+				<input class="message_input" placeholder="Type your message here..." />
+			</div>
+			<div class="send_message">
+				<div class="icon"></div>
+				<div class="text">Send</div>
+			</div>
+		</div>
+		</div>
+		<div class="message_template">
+			<li class="message">
+				<div class="avatar"></div>
+				<div class="text_wrapper">
+					<div class="text"></div>
+				</div>
+			</li>
+		</div>
+	</div>
+	<div id="createDivMain" style="width: 100%;">
+		
+
+		<div class="limiter">
+			<div class="container-login100">
+				<div class="wrap-login100">
+					<div class="login100-pic js-tilt" data-tilt>
+						<img src="images/img-01.png" alt="IMG">
+					</div>
+	
+					<div id="formlogin" class="login100-form validate-form">
+						<span class="login100-form-title">
+							Create game
+						</span>
+						<div class="rbChecker">
+							
+							<input hidden type="radio" class="btn-check" name="flexRadioDefault" id="flexRadioDefault1" value=0 autocomplete="off" value=0>
+							<label id="lblrbb1" class="btn btn-outline-success" for="success-outlined">Join</label>
+							
+							<input hidden type="radio" class="btn-check" name="flexRadioDefault" id="flexRadioDefault2" value=1 autocomplete="off" checked value=1>
+							<label id="lblrbb2" class="btn btn-outline-danger" for="danger-outlined">Host</label>
+						</div>
+		
+	
+						<div class="wrap-input100">
+							<input class="input100" disabled type="text" name="code" placeholder="Join code" id="codeID">
+							<span class="focus-input100"></span>
+							<span class="symbol-input100">
+								<i class="fa fa-lock" aria-hidden="true"></i>
+							</span>
+						</div>
+	
+						<div class="wrap-input100 validate-input" data-validate = "Nickname is required">
+							<input id="nameInput" class="input100" type="text" name="nick" placeholder="Nickname">
+							<span class="focus-input100"></span>
+							<span class="symbol-input100">
+								<i class="fa fa-lock" aria-hidden="true"></i>
+							</span>
+						</div>
+
+						<div class="wrap-input100 validate-input" data-validate = "Max points should be higher or equal 300">
+							<input id="pointsInput" class="input100" type="number" name="pts" placeholder="Min pts for win (min 300)" min=300>
+							<span class="focus-input100"></span>
+							<span class="symbol-input100">
+								<i class="fa fa-lock" aria-hidden="true"></i>
+							</span>
+						</div>
+
+						<div class="container-login100-form-btn">
+							<button id="buttonMain" class="login100-form-btn">Create</button>
+						</div>
+	
+					</div>
+				</div>
+			</div>
+		</div>
+	  </div>
+
+	  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title" id="exampleModalLongTitle">Choose the desired color</h5>
+			  
+			</div>
+			<div class="modal-body">
+				<select id="selectMain" class="form-select" aria-label="Default select example">
+					<option value="red">red</option>
+					<option value="green">green</option>
+					<option value="blue">blue</option>
+					<option value="yellow">yellow</option>
+				  </select>
+			</div>
+			<div class="modal-footer">
+			  
+			  <button id="choosColorBtn" type="button" class="btn btn-primary">Choose</button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+
+	<div id="divCollectionId" class="divCollection">
+		<div>
+			<ul id="queue" class="list-group"></ul>
+			<div id="startGameDiv"></div>
+
+		</div>
+	</div>
+	<div class="players">
+	<a class="btn-floating btn-large waves-effect waves-light open-players"
+										></a
+									>
+		<ul>
+			
+		</ul>
+		</div>	
+	<div class="containerGame" id="containerGameID" style="display:none;">
+		<div class="board"></div>
+		<div id="btnEndAndDraw"></div>
+		<div class="card-list-container"></div>
+		
+	</div>
+	  <script>
+		var check1 = document.getElementById("flexRadioDefault1");
+		var check2 = document.getElementById("flexRadioDefault2");
+		var lbl1 = document.getElementById("lblrbb1");
+		var lbl2 = document.getElementById("lblrbb2");
+		var textBox = document.getElementById("codeID");
+		var points = document.getElementById("pointsInput")
+		points.addEventListener("change", function(){
+			if (points.value<300)
+			{
+				points.value=300;
+			}
+		});
+		lbl1.addEventListener("click", function(){
+			textBox.disabled=false;
+			points.disabled=true;
+			points.value=300;		
+			check1.checked=true;
+			check2.checked=false;		
+		});
+		lbl2.addEventListener("click", function(){
+			textBox.text="";
+			points.disabled=false;
+			points.value=300;
+			textBox.disabled=true;	
+			check2.checked=true;
+			check1.checked=false;			
+		});
+
+
+			
+	</script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<!--===============================================================================================-->	
+	<!-- <script src="vendor/jquery/jquery-3.2.1.min.js"></script> -->
+<!--===============================================================================================-->
+	 <!-- <script src="vendor/bootstrap/js/popper.js"></script> -->
+	<!--<script src="vendor/bootstrap/js/bootstrap.min.js"></script> -->
+<!--===============================================================================================-->
+	<!-- <script src="vendor/select2/select2.min.js"></script> -->
+<!--===============================================================================================-->
+	<script src="vendor/tilt/tilt.jquery.min.js"></script>
+	<script >
+		$('.js-tilt').tilt({
+			scale: 1.1
+		})
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+	<script>
+		const socket = io({
+			query: {
+			token: "cde",
+			},
+		});
+	</script>
+
+	
+		
+	
+<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+	
+<!--===============================================================================================-->
+<script src="igraciFrontend.js"></script>
+<script src="kartaFrontend.js"></script>
+<script src="spilFrontend.js"></script>
+<script src="tablaFrontend.js"></script>
+<script src="igra.js"></script>
+
+</body>
+</html>
