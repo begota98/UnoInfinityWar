@@ -264,3 +264,175 @@ io.on("connection", (socket) => {
       socket.emit("greska", { poruka: err.message });
     }
   });
+  // kada igrac odigra potez
+  socket.on("kartaOdigrana", async (podaci) => {
+    try {
+      let isPlayed = await igraKontroler.odigraj(
+        podaci.idPartije,
+        podaci.indexIgraca,
+        podaci.indexKarte,
+        podaci.karta,
+        podaci.idIgraca
+      );
+      if (isPlayed == -1) 
+      {
+        socket.emit("nisteNaPotezu", 
+        {
+          idPartije: podaci.idPartije,
+          // indeks: podaci.indeks,
+          idIgraca: podaci.idIgraca,
+        });
+        return;
+      } 
+      else if (isPlayed == 0) 
+      {
+        socket.emit("pogresanPotez", 
+        {
+          idPartije: podaci.idPartije,
+          // indeks: podaci.indeks,
+          idIgraca: podaci.idIgraca,
+        });
+        return;
+      }
+      let igra = await igraModel.findById(podaci.idPartije);
+      //pamtimo svaki potez u bazi
+      let korisnikP = await korisnikModel.findById(podaci.idIgraca);
+
+      igra.karte.push({
+        karta: {
+          vrednost: podaci.karta.vrednost,
+          specijalna: podaci.karta.specijalna,
+          boja: podaci.karta.boja,
+        },
+        korisnik: korisnikP,
+        bojaPozadine: podaci.karta.boja,
+        imeUPartiji: podaci.imeIgraca,
+      });
+      await igra.save();
+
+      let igraci = [];
+      for (let igrac of igra.igraci) {
+        igraci.push({
+          ime: igrac.ime,
+          indeks: igrac.indeks,
+          izvucenihKarata: igrac.karte.length,
+          poeni: igrac.poeni,
+        });
+      }
+      for (let igrac of igra.igraci) {
+        io.to(igrac.soketId).emit("azuriranaPartija", {
+          idPartije: podaci.idPartije,
+          igraci: igraci,
+          trenutnaKarta: igra.trenutnaKarta,
+          igracNaPotezu: igra.igracNaPotezu,
+          trenutnaBoja: igra.trenutnaBoja,
+          kartaJeIzvucena: isPlayed == 4 || isPlayed == 3 ? true : false,
+        });
+      }
+
+      // azuriranje za sve
+      //??????????????mozda pbrazac
+      let uno = false;
+      if (igra.igraci[podaci.indexIgraca].karte.length == 1) 
+        uno = true;
+      for (let igrac of igra.igraci) 
+      {
+        io.to(igrac.soketId).emit("pribaviKarte", 
+        {
+          idIgraca: igrac.idIgraca,
+          karte: igrac.karte,
+          idPartije: podaci.idPartije,
+        });
+      }
+      console.log(isPlayed);
+      if (uno) {
+        for (let igrac of igra.igraci) {
+          io.to(igrac.soketId).emit("uno", {
+            idPartije: podaci.idPartije,
+          });
+        }
+      }
+      if (isPlayed == 2) {
+        io.to(igra.igraci[igra.igracNaPotezu].socketId).emit("drawTwo", {
+          idPartije: podaci.idPartije,
+        });
+      } else if (isPlayed == 3) {
+        io.sockets.emit("odaberiteBoju", {
+          idPartije: podaci.idPartije,
+          indexIgraca: podaci.indexIgraca,
+          idIgraca: igra.igraci[podaci.indexIgraca].idIgraca,
+        });
+      } else if (isPlayed == 4) {
+        io.sockets.emit("odaberiteBoju", {
+          idPartije: podaci.idPartije,
+          indexIgraca: podaci.indexIgraca,
+          idIgraca: igra.igraci[podaci.indexIgraca].idIgraca,
+        });
+        igraKontroler.sledeciPotez(igra);
+        io.to(igra.igraci[igra.igracNaPotezu].socketId).emit("drawFour", {
+          idPartije: podaci.idPartije,
+        });
+        igra.obrnutRedosled = !igra.obrnutRedosled;
+        igraKontroler.sledeciPotez(igra);
+        igra.obrnutRedosled = !igra.obrnutRedosled;
+      } else if (isPlayed == 5) {
+        io.sockets.emit("preskakanjeIgraca", {
+          idPartije: podaci.idPartije,
+        });
+      } else if (isPlayed == 6) {
+        io.sockets.emit("promenaSmeraPartije", {
+          idPartije: podaci.idPartije,
+        });
+      } else if (isPlayed == 7) {
+        io.sockets.emit("zavrsetakPartije", {
+          idPartije: podaci.idPartije,
+          indeks: podaci.indexIgraca,
+          idIgraca: podaci.idIgraca,
+          success: "Kraj igre",
+        });
+      }
+    } catch (err) {
+      socket.emit("greska", { poruka: err.message });
+    }
+  });
+
+  socket.on("bojaOdabrana", async (podaci) => {
+    try {
+      if (
+        !podaci.idPartije ||
+        !podaci.boja ||
+        podaci.indexIgraca === undefined ||
+        !podaci.idIgraca
+      )
+        throw new Error("nedovoljno podata");
+
+      await igraKontroler.promeniTrenutnuBoju(
+        podaci.idPartije,
+        podaci.boja,
+        podaci.indexIgraca,
+        podaci.idIgraca
+      );
+      let igra = await igraModel.findById(podaci.idPartije);
+      let igraci = [];
+      for (let igrac of igra.igraci) {
+        igraci.push({
+          ime: igrac.ime,
+          indeks: igrac.indeks,
+          izvucenihKarata: igrac.karte.length,
+          poeni: igrac.poeni,
+        });
+      }
+      for (let igrac of igra.igraci) {
+        io.to(igrac.soketId).emit("azuriranaPartija", {
+          idPartije: podaci.idPartije,
+          igraci: igraci,
+          trenutnaKarta: igra.trenutnaKarta,
+          igracNaPotezu: igra.igracNaPotezu,
+          trenutnaBoja: igra.trenutnaBoja,
+          kartaJeIzvucena: true,
+        });
+      }
+    } catch (err) {
+      socket.emit("greska", { poruka: err.message });
+    }
+  });
