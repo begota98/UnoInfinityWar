@@ -1,112 +1,266 @@
-//import express = require('express');
-// Create a new express app instance
 import express from "express";
 import cors from "cors";
+import socketio from "socket.io";
+import http from "http";
+import Igra from "./Logika igre/igra";
 import path from "path";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import http from "http";
-import socketio from "socket.io";
-import {
-  igracModel,
-  kartaModel,
-  chatModel,
-  korisnikModel,
-  igraModel,
-  odigranaKartaModel,
-} from "./model/ModelBazePodataka";
-import { serverKomunikacioniSloj } from "./serverKomunikacioniSloj";
+import { igraModel, igracModel, korisnikModel } from "./Model/db-model";
+import { getMaxListeners } from "process";
+import { Socket } from "dgram";
+// Firebase App (the core Firebase SDK) is always required and
+// must be listed before other Firebase SDKs
 dotenv.config();
 
-const app = express();
+// create the igra
+let igraKontroler: Igra = new Igra();
+
+const aplikacija = express();
 const PORT = 3000;
-const server = http.createServer(app);
-const konekcioniString = "";
-mongoose.connect(konekcioniString, { useNewUrlParser: true });
+const server = http.createServer(aplikacija);
+mongoose.connect(process.env.CONNECTION_STRING, { useNewUrlParser: true });
 mongoose.connection.once("open", () => {
-  console.log("Konektovan sa bazom podataka : " + konekcioniString);
+  console.log("connected to db " + process.env.CONNECTION_STRING);
 });
-app.use(cors());
-app.use(express.static("output"));
-app.use(express.static("styles"));
+aplikacija.use(cors());
+aplikacija.use(express.static("output"));
+aplikacija.use(express.static("Front klase"))
+aplikacija.use(express.static("styles"));
+const io = socketio.listen(server);
 
-server.listen(process.env.PORT || PORT, () => {
-  console.log(`Server osluskuje na portu : ${process.env.PORT || PORT}`);
-});
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "pocetna.html"));
+aplikacija.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "./Stranice/signin.html"));
 });
 
-//ceo sloj sa socket.io metodama
-const serverKomiSloj = serverKomunikacioniSloj(server);
 
-app.get("/vratikorisnike", async function (req, res) {
-  let korisnici = await korisnikModel.find();
-  console.log(korisnici);
-  res.json(korisnici);
+aplikacija.get("/signin", (req, res) => {
+  res.sendFile(path.join(__dirname, "./Stranice/signin.html"));
 });
 
-//http://localhost:3000/vratikorisnike
-
-app.get("/vratikorisnika/:id", async function (req, res) {
-  let korisnik = await korisnikModel.findById(req.params.id);
-  console.log(korisnik);
-  res.json(korisnik);
+aplikacija.get("/signup", (req, res) => {
+  res.sendFile(path.join(__dirname, "./Stranice/signup.html"));
 });
-//http://localhost:3000/vratikorisnika/BinFicP2ttfws0JCei2kMPcL0xY2
-//BinFicP2ttfws0JCei2kMPcL0xY2
 
-app.get("/vratiigrekorisnika/:id", async function (req, res) {
+aplikacija.get("/kreirajIgru", (req, res) => {
+  res.sendFile(path.join(__dirname, "./Stranice/kreirajIgru.html"));
+});
+
+aplikacija.get("/pregledIgre", (req, res) => {
+  res.sendFile(path.join(__dirname, "./Stranice/pregledIgre.html"));
+});
+
+aplikacija.get("/resetpass", (req, res) => {
+  res.sendFile(path.join(__dirname, "./Stranice/resetpass.html"));
+});
+
+aplikacija.get("/pocetnaStrana", function (req, res) 
+{
+  res.sendFile(path.join(__dirname, "./Stranice/pocetnaStrana.html"));
+});
+
+aplikacija.get("/oStranici", function (req, res) 
+{
+  res.sendFile(path.join(__dirname, "./Stranice/oStranici.html"));
+});
+
+aplikacija.get("/istorijaIgara", function (req, res) 
+{
+  res.sendFile(path.join(__dirname, "./Stranice/istorijaIgara.html"));
+});
+
+aplikacija.get("/igrajIgru", function (req, res) 
+{
+  res.sendFile(path.join(__dirname, "./Stranice/kreirajIgru.html"));
+});
+
+aplikacija.get("/vratiigrekorisnika/:id", async function (req, res) 
+{
   let korisnik = await korisnikModel.findById(req.params.id);
   if (korisnik) {
-    console.log(korisnik.get("prethodneIgre"));
     res.json(korisnik.get("prethodneIgre"));
   } else {
     res.json("");
   }
 });
 
-//http://localhost:3000/vratiigrekorisnika/BinFicP2ttfws0JCei2kMPcL0xY2
-
-app.get("/vratiigre", async function (req, res) {
-  let igre = await igraModel.find();
-  console.log(igre);
-  res.json(igre);
-});
-
-//http://localhost:3000/vratiigre
-
-app.get("/vratiigru/:id", async function (req, res) {
+aplikacija.get("/vratiigru/:id", async function (req, res) 
+{
   let igra = await igraModel.findById(req.params.id);
-  console.log(igra);
   res.json(igra);
 });
 
-//5ff9f39d8beeef1c6863a9ce
-//http://localhost:3000/vratiigru/5ff9f39d8beeef1c6863a9ce
-
-app.get("/vratiucesnikeigre/:id", async function (req, res) {
+aplikacija.get("/vratipotezeigre/:id", async function (req, res) 
+{
   let igra = await igraModel.findById(req.params.id);
   if (igra) {
-    console.log(igra.get("igraci"));
-    res.json(igra.get("igraci"));
-  } else {
-    res.json("");
-  }
-});
-//5ff9f39d8beeef1c6863a9ce
-//http://localhost:3000/vratiucesnikeigre/5ff9f39d8beeef1c6863a9ce
-
-app.get("/vratipotezeigre/:id", async function (req, res) {
-  let igra = await igraModel.findById(req.params.id);
-  if (igra) {
-    console.log(igra.get("karte"));
     res.json(igra.get("karte"));
   } else {
     res.json("");
   }
 });
 
-//5ff9f39d8beeef1c6863a9ce
-//http://localhost:3000/vratipotezeigre/5ff9f39d8beeef1c6863a9ce
+io.on("connection", (socket) => {
+  socket.on("istorija", async (podaci) =>{
+    let igra = await igraModel.findById(podaci.poruka);
+    socket.emit("istorijaOdgovor", {
+      uzmiStaTiTreba:igra,
+    });
+  });
+  socket.on("ulogovanSam", async (podaci) => {
+    try {
+      let user = await korisnikModel.findById(podaci.id);
+      if (user == null) 
+      {
+        user = new korisnikModel({
+          _id: podaci.id,
+        });
+        await user.save();
+      }
+    } catch (err) {
+      console.log("GRESKA");
+    }
+  });
+  socket.on("createGame", async (podaci) => {
+    try 
+    {
+      if (!podaci.ime  || !podaci.idIgraca)
+        throw new Error("nedovoljno popodataka");
+
+      let novaPartija = new igraModel({
+        igraci: [
+          {
+            ime: podaci.ime,
+            indeks: podaci.indexIgraca,
+            idIgraca: podaci.idIgraca,
+            soketId: socket.id,
+            izvucenihKarata: 0,
+            poeni: 0,
+          },
+        ],
+        igracNaPotezu: 0,
+        pocelaIgra: false,
+        obrnutRedosled: false,
+        datum: new Date().toLocaleString(),
+        poeniZaPobedu: podaci.PoeniZaPobedu,
+        brojIgraca: 1,
+      });
+      await novaPartija.save();
+      socket.emit("kreiranaJeIgraID", {
+        //salje se ID igre
+        idPartije: novaPartija._id,
+        idIgraca: podaci.idIgraca,
+      });
+      socket.idPartije = novaPartija._id;
+    } catch (err) {
+      socket.emit("greska", { poruka: err.message });
+    }
+  });
+
+  // kada se ostali korisnci joinuju partiji
+  socket.on("pridruziSePartiji", async (podaci) => {
+    try 
+    {
+      if (!podaci.idPartije || !podaci.idIgraca) 
+        throw new Error("nedovoljno podataka");
+      let igra = await igraModel.findById(podaci.idPartije);
+      if (!igra) 
+        throw new Error("ne postoji igra sa ovim id-jem");
+
+      if (igra.pocelaIgra) 
+      {
+        throw new Error("partija je vec pocela");
+      }
+      //provera da se nismo joinovali ranije
+      for (let igrac of igra.igraci) 
+      {
+        if (igrac.idIgraca == podaci.idIgraca) 
+          return;
+      }
+      let index = igra.igraci.length;
+      igra.igraci.push({
+        ime: podaci.imeIgraca,
+        indeks: index,
+        idIgraca: podaci.idIgraca,
+        soketId: socket.id,
+        izvucenihKarata: 0,
+        poeni: 0,
+      });
+      // postavljanje idPartije na socket objekat
+      socket.idPartije = igra._id;
+      let igraci = [];
+      for (let igrac of igra.igraci) {
+        igraci.push({
+          ime: igrac.ime,
+          indeks: igrac.indeks,
+        });
+      }
+      igra.markModified("igraci");
+      igra.brojIgraca++;
+      await igra.save();
+
+      //kada se uspesno joinujemo
+      socket.emit("uspesnoPridruzivanjeIgri", {
+        idPartije: igra._id,
+        idIgraca: podaci.idIgraca,
+        indexIgraca: index,
+      });
+      for (let igrac of igra.igraci) {
+        //promena u redu cekanja 
+        io.to(igrac.soketId).emit("promenaIgracaKojiCekajuPartiju", {
+          idPartije: igra._id,
+          igraci: igraci,
+        });
+      }
+    } catch (err) {
+      socket.emit("greska", { poruka: err.message });
+    }
+  });
+
+  // pokretanje igre
+  socket.on("pokreniIgru", async (podaci) => {
+    try 
+    {
+      let igra = await igraModel.findById(podaci.idPartije);
+      if (!igra) 
+        throw new Error("ne postoji igra sa tim id-jem");
+
+      let igraci = [];
+      for (let igrac of igra.igraci) 
+        igraci.push(igrac);
+      igra = await igraKontroler.kreirajIgru(igra._id, igraci);
+      igraci = [];
+      for (let igrac of igra.igraci) {
+        igraci.push({
+          ime: igrac.ime,
+          indeks: igrac.indeks,
+          izvucenihKarata: igrac.karte.length,
+          poeni: igrac.poeni,
+        });
+
+        let ikorisnikPom = await korisnikModel.findById(igrac.idIgraca);
+        ikorisnikPom.prethodneIgre.push(igra._id);
+        await ikorisnikPom.save();
+      }
+      //pocetak partije
+      for (let igrac of igra.igraci) {
+        io.to(igrac.soketId).emit("kreiranaJeIgra", {
+          idPartije: podaci.idPartije,
+          igraci: igraci,
+          trenutnaKarta: igra.trenutnaKarta,
+          igracNaPotezu: igra.igracNaPotezu,
+          trenutnaBoja: igra.trenutnaBoja,
+        });
+      }
+      //izvlacenje karata za svakog od igraca
+      for (let igrac of igra.igraci) {
+        io.to(igrac.soketId).emit("pribaviKarte", {
+          idIgraca: igrac.idIgraca,
+          karte: igrac.karte,
+          idPartije: podaci.idPartije,
+        });
+      }
+    } catch (err) {
+      socket.emit("greska", { poruka: err.message });
+    }
+  });
