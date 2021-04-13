@@ -526,3 +526,364 @@ window.addEventListener("DOMContentLoaded", () =>
                   });
               });
           });
+  socket.on("promenaIgracaKojiCekajuPartiju", (podaci) => 
+          {
+              if (idPartije != podaci.idPartije) 
+              {
+                  return;
+              }
+              igraci = podaci.igraci;
+              let listaCekanja = document.querySelector("#queue");
+              listaCekanja.innerHTML = "";
+              let i = 0;
+              for (let igrac of igraci) 
+              {
+                  let igracZaPrikaz = document.createElement("li");
+                  igracZaPrikaz.classList.add("list-group-item");
+                  igracZaPrikaz.innerText = igrac.ime;
+                  if (igrac.indexIgraca == indexIgraca) 
+                  {
+                    igracZaPrikaz.innerText += " (Vi)";
+                  }
+                  if (da_li_je_host==1 && igrac.indexIgraca != indexIgraca) 
+                  {
+                      let a = document.createElement("a");
+                      a.setAttribute("index", i);
+                      a.className = "btnKick btn btn-warning";
+                      a.innerText = " Izbaci ";
+                      igracZaPrikaz.appendChild(a);
+                      a.addEventListener("click", (e) => 
+                      {
+                        if(Number(e.target.attributes.index.value)!=0)
+                          socket.emit("kickujIgraca", 
+                          {
+                              idIgraca: idIgraca,
+                              idPartije: idPartije,
+                              indexIgraca: Number(e.target.attributes.index.value),
+                          });
+                      });
+                  }
+                  listaCekanja.appendChild(igracZaPrikaz);
+                  i++;
+              }
+          });
+
+          socket.on("odaberiteBoju", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije) 
+              {
+                  return;
+              }
+              if (idIgraca != podaci.idIgraca) 
+              {
+                  return;
+              }
+              
+              $('#exampleModalCenter').modal({backdrop: 'static', keyboard: false});
+            
+              izaberiBojuDugme.addEventListener("click", () => 
+              {
+                  let boja = document.getElementById("selectMain").value;
+                  socket.emit("bojaOdabrana", 
+                  {
+                      idPartije: idPartije,
+                      idIgraca: idIgraca,
+                      indexIgraca: indexIgraca,
+                      boja: boja,
+                  });
+                  $('#exampleModalCenter').modal('hide');
+              });
+          });
+
+          socket.on("pogresanPotez", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije || podaci.idIgraca != idIgraca) 
+              {
+                  return;document.querySelector(".card-list-container").innerHTML="";
+              }
+              swal.fire(
+              {
+                  confirmButtonColor: "#2c3e50",
+                  icon: "error",
+                  title: "Pogresan potez",
+                  timer: 500,
+
+                  showConfirmButton: false,
+              });
+          });
+
+          socket.on("nisteNaPotezu", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije || podaci.idIgraca != idIgraca) 
+              {
+                  return;
+              }
+              swal.fire(
+              {
+                  confirmButtonColor: "#2c3e50",
+                  icon: "error",
+                  title: "Niste na potezu, sacekajte",
+                  timer: 500,
+
+                  showConfirmButton: false,
+              });
+          });
+
+          socket.on("izvuceneKarteZaTrenutniPotez", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije || podaci.idIgraca != idIgraca) 
+              {
+                  return;
+              }
+              swal.fire(
+              {
+                  confirmButtonColor: "#2c3e50",
+                  icon: "error",
+                  title: "Mozete izvuci najvise 2 karte u jednom potezu",
+                  timer: 500,
+
+                  showConfirmButton: false,
+              });
+          });
+
+          socket.on("greska", (podaci) => 
+          {
+              swal.fire(
+              {
+                  confirmButtonColor: "#2c3e50",
+                  icon: "error",
+                  title: podaci.poruka,
+                  timer: 500,
+
+                  showConfirmButton: false,
+              });
+          });
+
+          socket.on("zavrsetakPartije", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije) 
+              {
+                  return;
+              }
+              //if (podaci.idIgraca == idIgraca) 
+              //{
+                  swal.fire(
+                  {
+                      confirmButtonColor: "#2c3e50",
+                      cancelButtonColor: "#2c3e50",
+                      icon: "success",
+                      title: "Cestitamo, Vi ste pobedili ovu partiju",
+                      showCancelButton: true,
+                      cancelButtonText: "Vrati na pocetnu",
+                      confirmButtonText: "Nova igra ?",
+                      allowOutsideClick: false,
+                      allowEscapeKey: false,
+                      allowEnterKey: false,
+                  })
+                  .then((e) => 
+                  {
+                      if (e.isDismissed) 
+                      {
+                          window.location.href = "/pocetnaStrana";
+                      } 
+                      else 
+                      {
+                        //   socket.emit("revans", 
+                        //   {
+                        //     idPartije: idPartije,
+                        //   });
+                        window.location.href = "/kreirajIgru";
+                      }
+                  });
+              //} 
+            //   else 
+            //   {
+            //       swal.fire(
+            //       {
+            //           confirmButtonColor: "#2c3e50",
+            //           cancelButtonColor: "#2c3e50",
+            //           icon: "info",
+            //           title: "Partija je zavrsena, pobednik moze zatraziti revans, ali to niste vi :(",
+            //       });
+            //   }
+          });
+
+          socket.on("uno", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije) 
+              {
+                  return;
+              }
+
+              swal.fire(
+              {
+                  confirmButtonColor: "#2c3e50",
+                  icon: "warning",
+                  title: "UNO",
+                  timer: 500,
+                  showConfirmButton: false,
+              });
+          });
+
+          socket.on("igracDiskonektovan", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije) 
+              {
+                  return;
+              }
+
+              swal.fire(
+              {
+                  confirmButtonColor: "#2c3e50",
+                  icon: "warning",
+                  title: "Igrac " + podaci.imeIgraca + " se diskonektovao",
+                  timer: 1000,
+                  showConfirmButton: false,
+              });
+          });
+
+          socket.on("vuciDve", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije) 
+              {
+                  return;
+              }
+
+              swal.fire(
+              {
+                  confirmButtonColor: "#2c3e50",
+                  icon: "warning",
+                  title: "Dodate su +2 karte",
+                  timer: 500,
+                  showConfirmButton: false,
+              });
+          });
+
+          socket.on("vuciCetiri", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije) 
+              {
+                  return;
+              }
+
+              swal.fire(
+              {
+                  confirmButtonColor: "#2c3e50",
+                  icon: "warning",
+                  title: "Dodate su +4 karte",
+                  timer: 500,
+                  showConfirmButton: false,
+              });
+          });
+
+          //ovo samo da se proveri dal se prikazuje svima, onom ko je odigrao, ili onaj na koga se odnosi efekat
+          socket.on("preskakanjeIgraca", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije) 
+              {
+                  return;
+              }
+
+              swal.fire(
+              {
+                  confirmButtonColor: "#2c3e50",
+                  icon: "warning",
+                  title: "Preskocen je igrac",
+                  timer: 500,
+                  showConfirmButton: false,
+              });
+          });
+
+          socket.on("promenaSmeraPartije", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije) 
+              {
+                  return;
+              }
+
+              swal.fire(
+              {
+                  confirmButtonColor: "#2c3e50",
+                  icon: "warning",
+                  title: "Promenjen je smer igre",
+                  timer: 500,
+                  showConfirmButton: false,
+              });
+          });
+
+          //?????????????????????????????????????????????????? mislim da umesto Swal treba swal
+          socket.on("prijemPoruke", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije) 
+              {
+                  return;
+              }
+              var strana_poruke =  podaci.idIgraca!=idIgraca ? 'right' : 'left';
+              var poruka = new Message(
+              {
+                  text: podaci.tekstPoruke,
+                  strana_poruke: strana_poruke,
+                  idPartije:podaci.idPartije,
+                  imeIgraca:podaci.imeIgraca,
+                  idIgraca:podaci.idIgraca,
+              });
+              poruka.draw();
+              if (idIgraca != podaci.idIgraca) 
+              {
+                  Swal.fire(
+                  {
+                      position: "top-start",
+                      title: `${podaci.imeIgraca}: ${podaci.message}`,
+                      showConfirmButton: false,
+                      timer: 1000,
+                      backdrop: false,
+                      customClass: 
+                      {
+                          title: "swal-title",
+                          container: "swal-container-class",
+                      },
+                  });
+              }
+          });
+
+          socket.on("promenaIndexa", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije || podaci.idIgraca != idIgraca) 
+              {
+                  return;
+              }
+              indexIgraca = podaci.noviIndex;
+          });
+
+          socket.on("kikovaniSte", (podaci) => 
+          {
+              if (podaci.idPartije != idPartije)
+              { 
+                  return;
+              }
+              swal.fire(
+              {
+                  confirmButtonColor: "#2c3e50",
+
+                  icon: "warning",
+                  title: "Izbaceni ste od strane hosta partije",
+                  confirmButtonText: "Ok",
+                  allowOutsideClick: false,
+                  allowEscapeKey: false,
+                  allowEnterKey: false,
+              })
+              .then((e) => 
+              {
+                  window.location.href = "/";
+              });
+          });
+      } 
+      else 
+      {
+      // No korisnik is signed in.
+      }
+  });
+
+  //firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+});
+
