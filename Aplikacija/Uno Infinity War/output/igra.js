@@ -298,3 +298,231 @@ window.addEventListener("DOMContentLoaded", () =>
           })
 
           
+          //ovde krecu eventi, treba da se prebaci u poseban fajl
+          //event koji se dogodi nakon startovanja partije
+          socket.on("kreiranaJeIgra", (podaci) => 
+          {
+              if (idPartije != podaci.idPartije) 
+              {
+                  return;
+              }
+              swal.close();
+              document.querySelector("#queue").innerHTML = "";
+              document.querySelector("#queue").className = "";
+              document.querySelector("#queue").style.display = "none";
+              if (document.querySelector("#startGameBtn"))
+              {
+                  document.querySelector("#startGameBtn").remove();
+              }
+              document.getElementById("containerGameID").style.display="flex";
+              igraci = [];
+              for (let igrac of podaci.igraci) 
+              {
+                igraci.push(
+                  {
+                        imeIgraca: igrac.ime,
+                        indexIgraca: igrac.indeks,
+                        skor: igrac.poeni,
+                        izvucenihKarata: igrac.izvucenihKarata,
+                  });
+              }
+              document.querySelector(".players ul").innerHTML="";
+              document.querySelector(".board").innerHTML="";
+              //ovo potencijalno da se obrise, nema potrebe da proveravamo sirinu
+              if (sirina <= 600) 
+              {
+                  let openPlayersBtn = document.querySelector(".open-players");
+                  openPlayersBtn.style.display = "block";
+                  openPlayersBtn.addEventListener("click", () => 
+                  {
+                      let igraci = document.querySelector(".players ul");
+                      igraci.style.display = "block";
+                      setTimeout(() => {
+                        igraci.style.display = "none";
+                      }, 1500);
+                  });
+              }
+              window.addEventListener("resize", () => 
+              {
+                  sirina = innerWidth;
+                  let openPlayersBtn = document.querySelector(".open-players");
+                  if (sirina <= 600) 
+                  {
+                      document.querySelector(".players ul").style.display = "none";
+                      openPlayersBtn.style.display = "block";
+                      openPlayersBtn.addEventListener("click", () => 
+                      {
+                          let igraci = document.querySelector(".players ul");
+                          igraci.style.display = "block";
+                          setTimeout(() => 
+                          {
+                            igraci.style.display = "none";
+                          }, 1500);
+                      });
+                  } 
+                  else 
+                  {
+                      openPlayersBtn.style.display = "none";
+                      document.querySelector(".players ul").style.display = "block";
+                  }
+              });
+
+              let igraciZaPrikaz = new IgraciFrontend(igraci, indexIgraca, podaci.igracaNaPotezu);
+              igraciZaPrikaz.renderujIgrace(document.querySelector(".players ul"));
+            
+              let dugmiciZaKickovanje = document.querySelectorAll(".btnKick");
+              for (let dugme of dugmiciZaKickovanje) 
+              {
+                  dugme.addEventListener("click", (e) => 
+                  {
+                      if(Number(dugme.dataset.index)!=0)
+                        socket.emit("kickujIgraca", 
+                        {
+                            idIgraca: idIgraca,
+                            idPartije: idPartije,
+                            indexIgraca: Number(dugme.dataset.index),
+                        });
+                  });
+              }
+
+              let kartaNaTabliPrikaz = new TablaFrontend(podaci.trenutnaKarta, "");
+              kartaNaTabliPrikaz.renderujTablu(document.querySelector(".board"));
+              
+
+              bodyElement.style.backgroundColor = nizBoja[podaci.trenutnaBoja];
+              let dugmeVuciKartu = document.createElement("button");
+              dugmeVuciKartu.className = "btn btn-info gameBtn";
+              dugmeVuciKartu.innerText = "Vuci kartu";
+              let dugmeZavrsiPotez = document.createElement("button");
+              dugmeZavrsiPotez.className = "btn btn-info gameBtn";
+              dugmeZavrsiPotez.innerText = "Zavrsi potez";
+
+              dugmeVuciKartu.addEventListener("click", () => 
+              {
+                  socket.emit("vuciKartu", 
+                  {
+                      idPartije: idPartije,
+                      idIgraca: idIgraca,
+                      indexIgraca: indexIgraca,
+                  });
+              });
+
+              dugmeZavrsiPotez.addEventListener("click", () => 
+              {
+                  socket.emit("zavrsiPotez", 
+                  {
+                      idPartije: idPartije,
+                      idIgraca: idIgraca,
+                      indexIgraca: indexIgraca,
+                  });
+              });
+              var pom = document.getElementById('btnEndAndDraw');
+              pom.appendChild(dugmeVuciKartu);
+              pom.appendChild(dugmeZavrsiPotez);
+          });
+
+          //kad se azurira igrica nakon poteza
+          socket.on("azuriranaPartija", (podaci) => 
+          {
+              if (idPartije != podaci.idPartije) 
+              {
+                  return;
+              }
+              if (indexIgraca == podaci.trenutniIgracNaPotezu && !podaci.kartaJeIzvucena) 
+              {
+                  swal.fire(
+                  {
+                      confirmButtonColor: "#2c3e50",
+                      icon: "info",
+                      title: "Vi ste na potezu",
+                      timer: 500,
+
+                      showConfirmButton: false,
+                  });
+              }
+              document.querySelector(".players ul").innerHTML="";
+              document.querySelector(".board").innerHTML="";
+              document.querySelector("#queue").innerHTML="";
+
+              
+              //ovaj animate treba isto da se izbrise ja mislim
+              let animated = "";
+              if (!podaci.kartaJeIzvucena) 
+              {
+                  animated = "animate__animated animate__bounce";
+              }
+              igraci = [];
+              for (let igrac of podaci.igraci) 
+              {
+                igraci.push(
+                  {
+                      imeIgraca: igrac.ime,
+                      indexIgraca: igrac.indeks,
+                      skor: igrac.poeni,
+                      izvucenihKarata: igrac.izvucenihKarata,
+                  });
+              }
+
+              let tabelaIgracaZaPrikaz = new IgraciFrontend(igraci,indexIgraca,podaci.indexIgracaNaPotezu);
+              tabelaIgracaZaPrikaz.renderujIgrace(document.querySelector(".players ul"));
+              
+              let dugmeZaKickovanje = document.querySelectorAll(".btnKick");
+              for (let dugme of dugmeZaKickovanje) 
+              {
+                  dugme.addEventListener("click", (e) => 
+                  {
+                    if(Number(dugme.dataset.index)!=0)
+                      socket.emit("kickujIgraca", 
+                      {
+                          idIgraca: idIgraca,
+                          idPartije: idPartije,
+                          indexIgraca: Number(dugme.dataset.index),
+                      });
+                  });
+              }
+
+              let trenutnaKarta = new TablaFrontend(podaci.trenutnaKarta,"animated");
+              trenutnaKarta.renderujTablu(document.querySelector(".board"));
+            
+              bodyElement.style.backgroundColor = nizBoja[podaci.trenutnaBoja];
+          });
+
+          socket.on("pribaviKarte", (podaci) => 
+          {
+              if (idIgraca != podaci.idIgraca) 
+              {
+                  return;
+              }
+              karte = podaci.karte;
+              console.log(karte);
+              console.log(podaci);
+              //?????????????????????????????????????????????????????????????????????????????????????????????????????????
+              document.querySelector(".card-list-container").innerHTML="";
+
+              let karteURuciPrikaz = new SpilFrontend(karte);
+              karteURuciPrikaz.renderujSpil(document.querySelector(".card-list-container"));
+              
+              let listaKarata = document.querySelectorAll(".single-card");
+            
+              listaKarata.forEach((karta) => 
+              {
+                  karta.addEventListener("click", (e) => 
+                  {
+                      //kada se klikne na kartu salje se dogadjaj kojim signaliziramo svim ostalima da smo odigrali kartu
+                      socket.emit("kartaOdigrana", 
+                      {
+                        idPartije: idPartije,
+                        indexIgraca: indexIgraca,
+                          karta: 
+                          {
+                              specijalna: karta.dataset.specijalna == "1" ? true : false,
+                              vrednost: Number(karta.dataset.vrednost),
+                              boja: karta.dataset.boja,
+                          },
+                          indexKarte: Number(karta.dataset.index),
+                          idIgraca: idIgraca,
+                          imeIgraca: imeIgraca,
+                      });
+                  });
+              });
+          });
