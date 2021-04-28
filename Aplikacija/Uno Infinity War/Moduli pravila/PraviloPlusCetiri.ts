@@ -42,4 +42,23 @@ var praviloPlusCetiri = async function (igra, pointerNaIgru)
   return 4;
 }
 
-export {praviloPlusCetiri as praviloPlusCetiri, ProveriPlusCetiriPravilo as ProveriPlusCetiriPravilo}
+var obavestiPlusCetiri = async function (rezultat,io, igra, podaci, igraKontroler)
+{
+  io.sockets.emit("odaberiteBoju", {
+    idPartije: podaci.idPartije,
+    indexIgraca: podaci.indexIgraca,
+    idIgraca: igra.igraci[podaci.indexIgraca].idIgraca,
+  });
+  igraKontroler.sledeciPotez(igra);
+  io.to(igra.igraci[igra.igracNaPotezu].soketId).emit("vuciCetiri", {
+    idPartije: podaci.idPartije,
+  });
+  igra.obrnutRedosled = !igra.obrnutRedosled;
+  igraKontroler.sledeciPotez(igra);
+  igra.obrnutRedosled = !igra.obrnutRedosled;
+}
+
+
+
+
+export {praviloPlusCetiri as praviloPlusCetiri, ProveriPlusCetiriPravilo as ProveriPlusCetiriPravilo, obavestiPlusCetiri as obavestiPlusCetiri}

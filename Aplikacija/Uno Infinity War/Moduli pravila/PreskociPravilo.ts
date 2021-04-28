@@ -38,4 +38,11 @@ var praviloPreskoci = async function (igra, pointerNaIgru)
     return 5;
 }
 
-export {praviloPreskoci as praviloPreskoci, ProveriPreskociPravilo as ProveriPreskociPravilo}
+var obavestiPreskoci = async function (rezultat,io, igra, podaci, igraKontroler)
+{
+  io.sockets.emit("preskakanjeIgraca", {
+    idPartije: podaci.idPartije,
+  });
+}
+
+export {praviloPreskoci as praviloPreskoci, ProveriPreskociPravilo as ProveriPreskociPravilo, obavestiPreskoci as obavestiPreskoci}

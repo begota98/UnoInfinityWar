@@ -5,7 +5,7 @@
   "scripts": {
     "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node server.js"
+    "start": "tsc && node aplikacija.js"
   },
   "keywords": [],
   "author": "",

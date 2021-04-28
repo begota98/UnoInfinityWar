@@ -177,7 +177,7 @@ window.addEventListener("DOMContentLoaded", () =>
                   {
                       let listaIgraca = document.createElement("li");
                       listaIgraca.classList.add("list-group-item");
-                      listaIgraca.innerText = imeIgraca + " (You)";
+                      listaIgraca.innerText = imeIgraca + " (Vi)";
                       listaIgracaZaPrikaz.appendChild(listaIgraca);
                   }
 
@@ -297,7 +297,6 @@ window.addEventListener("DOMContentLoaded", () =>
 
           })
 
-          
           //ovde krecu eventi, treba da se prebaci u poseban fajl
           //event koji se dogodi nakon startovanja partije
           socket.on("kreiranaJeIgra", (podaci) => 
@@ -526,7 +525,8 @@ window.addEventListener("DOMContentLoaded", () =>
                   });
               });
           });
-  socket.on("promenaIgracaKojiCekajuPartiju", (podaci) => 
+
+          socket.on("promenaIgracaKojiCekajuPartiju", (podaci) => 
           {
               if (idPartije != podaci.idPartije) 
               {
@@ -541,11 +541,11 @@ window.addEventListener("DOMContentLoaded", () =>
                   let igracZaPrikaz = document.createElement("li");
                   igracZaPrikaz.classList.add("list-group-item");
                   igracZaPrikaz.innerText = igrac.ime;
-                  if (igrac.indexIgraca == indexIgraca) 
+                  if (igrac.indeks == indexIgraca) 
                   {
                     igracZaPrikaz.innerText += " (Vi)";
                   }
-                  if (da_li_je_host==1 && igrac.indexIgraca != indexIgraca) 
+                  if (da_li_je_host==1 && igrac.indeks != 0) 
                   {
                       let a = document.createElement("a");
                       a.setAttribute("index", i);
@@ -665,47 +665,58 @@ window.addEventListener("DOMContentLoaded", () =>
               {
                   return;
               }
-              //if (podaci.idIgraca == idIgraca) 
-              //{
+              if (podaci.nemaIgraca == 1)
+              {
+                swal.fire(
+                    {
+                        icon: "success",
+                        title: "Cestitamo, Vi ste pobedili ovu partiju",
+        
+  
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                    }).then((e) => 
+                    {
+                        window.location.href = "/";
+
+                    }
+                    );
+              }
+              else if (podaci.idIgraca == idIgraca) 
+              {
                   swal.fire(
                   {
-                      confirmButtonColor: "#2c3e50",
-                      cancelButtonColor: "#2c3e50",
+
                       icon: "success",
                       title: "Cestitamo, Vi ste pobedili ovu partiju",
-                      showCancelButton: true,
-                      cancelButtonText: "Vrati na pocetnu",
-                      confirmButtonText: "Nova igra ?",
+
                       allowOutsideClick: false,
                       allowEscapeKey: false,
                       allowEnterKey: false,
                   })
                   .then((e) => 
                   {
-                      if (e.isDismissed) 
-                      {
-                          window.location.href = "/pocetnaStrana";
-                      } 
-                      else 
-                      {
-                        //   socket.emit("revans", 
-                        //   {
-                        //     idPartije: idPartije,
-                        //   });
-                        window.location.href = "/kreirajIgru";
-                      }
+                      
+                          window.location.href = "/";
+                      
+                      
                   });
-              //} 
-            //   else 
-            //   {
-            //       swal.fire(
-            //       {
-            //           confirmButtonColor: "#2c3e50",
-            //           cancelButtonColor: "#2c3e50",
-            //           icon: "info",
-            //           title: "Partija je zavrsena, pobednik moze zatraziti revans, ali to niste vi :(",
-            //       });
-            //   }
+              } 
+              else 
+              {
+                  swal.fire(
+                  {
+  
+                      icon: "info",
+                      title: "Partija je zavrsena, pobednik, nazalost, niste vi :(",
+                  }).then((e) => 
+                  {
+                      window.location.href = "/";
+
+                  }
+                  );
+              }
           });
 
           socket.on("uno", (podaci) => 
@@ -744,11 +755,12 @@ window.addEventListener("DOMContentLoaded", () =>
 
           socket.on("vuciDve", (podaci) => 
           {
+            console.log("IZVUCENE DVE");
               if (podaci.idPartije != idPartije) 
               {
                   return;
               }
-
+              console.log("IZVUCENE DVE");
               swal.fire(
               {
                   confirmButtonColor: "#2c3e50",
@@ -833,7 +845,7 @@ window.addEventListener("DOMContentLoaded", () =>
                   Swal.fire(
                   {
                       position: "top-start",
-                      title: `${podaci.imeIgraca}: ${podaci.message}`,
+                      title: `${podaci.imeIgraca}: ${podaci.tekstPoruke}`,
                       showConfirmButton: false,
                       timer: 1000,
                       backdrop: false,

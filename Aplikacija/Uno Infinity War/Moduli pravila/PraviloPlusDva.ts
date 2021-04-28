@@ -37,4 +37,12 @@ var praviloPlusDva = async function (igra, pointerNaIgru)
     return 2;
 }
 
-export {praviloPlusDva as praviloPlusDva, ProveriPlusDvaPravilo as ProveriPlusDvaPravilo}
+var obavestiPlusDva = async function (rezultat,io, igra, podaci, igraKontroler)
+{
+  console.log(igra.igracNaPotezu+ " " + igra.igraci[igra.igracNaPotezu].soketId);
+  io.to(igra.igraci[igra.igracNaPotezu].soketId).emit("vuciDve", {
+    idPartije: podaci.idPartije,
+  });
+}
+
+export {praviloPlusDva as praviloPlusDva, ProveriPlusDvaPravilo as ProveriPlusDvaPravilo, obavestiPlusDva as obavestiPlusDva}

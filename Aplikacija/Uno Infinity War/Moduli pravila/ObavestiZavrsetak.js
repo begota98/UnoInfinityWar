@@ -1,17 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -48,58 +35,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.obavestiWildBoja = exports.ProveriWildBojuPravilo = exports.praviloWildBoja = void 0;
-var IPravilo_1 = __importDefault(require("./IPravilo"));
-var ProveriWildBojuPravilo = /** @class */ (function (_super) {
-    __extends(ProveriWildBojuPravilo, _super);
-    function ProveriWildBojuPravilo(rule) {
-        var _this = _super.call(this) || this;
-        _this._pronalazacPravila = rule;
-        return _this;
-    }
-    ProveriWildBojuPravilo.prototype.OdrediPravilo = function () {
-        if (this._pronalazacPravila.karta2.specijalna && (this._pronalazacPravila.karta2.boja == "black" && this._pronalazacPravila.karta2.vrednost != 1))
-            return 5;
-        else
-            return 0;
-    };
-    return ProveriWildBojuPravilo;
-}(IPravilo_1.default));
-exports.ProveriWildBojuPravilo = ProveriWildBojuPravilo;
-var praviloWildBoja = function (igra, pointerNaIgru) {
+exports.obavestiZavrsetak = void 0;
+var obavestiZavrsetak = function (rezultat, io, igra, podaci, igraKontroler) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    igra.igraci[igra.igracNaPotezu].poeni += 50;
-                    if (!(igra.igraci[igra.igracNaPotezu].poeni >= igra.poeniZaPobedu)) return [3 /*break*/, 2];
+                    igra.zavrsenaIgra = 1;
                     return [4 /*yield*/, igra.save()];
                 case 1:
                     _a.sent();
-                    return [2 /*return*/, 7];
-                case 2: return [4 /*yield*/, igra.save()];
-                case 3:
-                    _a.sent();
-                    return [2 /*return*/, 3];
+                    io.sockets.emit("zavrsetakPartije", {
+                        idPartije: podaci.idPartije,
+                        indeks: podaci.indexIgraca,
+                        idIgraca: podaci.idIgraca,
+                        success: "Kraj igre",
+                    });
+                    return [2 /*return*/];
             }
         });
     });
 };
-exports.praviloWildBoja = praviloWildBoja;
-var obavestiWildBoja = function (rezultat, io, igra, podaci, igraKontroler) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            io.sockets.emit("odaberiteBoju", {
-                idPartije: podaci.idPartije,
-                indexIgraca: podaci.indexIgraca,
-                idIgraca: igra.igraci[podaci.indexIgraca].idIgraca,
-            });
-            return [2 /*return*/];
-        });
-    });
-};
-exports.obavestiWildBoja = obavestiWildBoja;
+exports.obavestiZavrsetak = obavestiZavrsetak;

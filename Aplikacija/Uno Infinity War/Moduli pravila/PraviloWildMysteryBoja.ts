@@ -34,5 +34,15 @@ var praviloWildBoja = async function (igra, pointerNaIgru)
     return 3;
 }
 
+var obavestiWildBoja = async function (rezultat,io, igra, podaci, igraKontroler)
+{
+  io.sockets.emit("odaberiteBoju", {
+    idPartije: podaci.idPartije,
+    indexIgraca: podaci.indexIgraca,
+    idIgraca: igra.igraci[podaci.indexIgraca].idIgraca,
+  });
+}
 
-export {praviloWildBoja as praviloWildBoja, ProveriWildBojuPravilo as ProveriWildBojuPravilo}
+
+
+export {praviloWildBoja as praviloWildBoja, ProveriWildBojuPravilo as ProveriWildBojuPravilo, obavestiWildBoja as obavestiWildBoja}

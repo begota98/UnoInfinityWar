@@ -1,16 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class Igrac {
-    constructor(name, index) {
+var Igrac = /** @class */ (function () {
+    function Igrac(name, index) {
         this.karte = [];
         this.ime = name;
         this.index = index;
     }
-    dodajKartu(card) {
+    Igrac.prototype.dodajKartu = function (card) {
         this.karte.push(card);
-    }
-    ukloniKartu(index) {
+    };
+    Igrac.prototype.ukloniKartu = function (index) {
         this.karte.splice(index, 1);
-    }
-}
+    };
+    return Igrac;
+}());
 exports.default = Igrac;

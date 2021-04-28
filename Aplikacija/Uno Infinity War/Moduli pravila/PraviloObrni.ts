@@ -41,6 +41,12 @@ var praviloObrni = async function (igra, pointerNaIgru)
     return 6;
 }
 
+var obavestiObrni = async function (rezultat,io, igra, podaci, igraKontroler)
+{
+  io.sockets.emit("promenaSmeraPartije", {
+    idPartije: podaci.idPartije,
+  });
+}
 
 
-export {praviloObrni as praviloObrni, ProveriObrniPravilo as ProveriObrniPravilo}
+export {praviloObrni as praviloObrni, ProveriObrniPravilo as ProveriObrniPravilo, obavestiObrni as obavestiObrni}

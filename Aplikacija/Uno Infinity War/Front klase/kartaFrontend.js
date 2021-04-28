@@ -6,20 +6,9 @@ var KartaFrontend = function (karta, index)
 
     this.odredjivanjeImenaFajla = function()
     {
-      if (this.karta.specijalna && this.karta.boja != "black") 
+    if (this.karta.specijalna && this.karta.boja != "black") 
     {
-      if (this.karta.vrednost == 2)
-      {
-        this.imefajla = `${9 + 3}_${this.karta.boja}.png`;
-      }
-      else if (this.karta.vrednost == 3)
-      {
-        this.imefajla = `${9 + 2}_${this.karta.boja}.png`;
-      }
-      else
-      { 
         this.imefajla = `${9 + this.karta.vrednost}_${this.karta.boja}.png`;
-      }
     } 
     else if (this.karta.specijalna) 
     {
