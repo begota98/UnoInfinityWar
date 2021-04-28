@@ -22,7 +22,7 @@ const PORT = 3000;
 const server = http.createServer(aplikacija);
 mongoose.connect(process.env.CONNECTION_STRING, { useNewUrlParser: true });
 mongoose.connection.once("open", () => {
-  console.log("connected to db " + process.env.CONNECTION_STRING);
+  console.log("KONEKTOVAN NA BAZU PODATAKA :" + process.env.CONNECTION_STRING);
 });
 aplikacija.use(cors());
 aplikacija.use(express.static("output"));
