@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var PraviloNevalidanPotez_1 = require("../Moduli pravila/PraviloNevalidanPotez");
-var PraviloNormalnaVrednost_1 = require("../Moduli pravila/PraviloNormalnaVrednost");
-var PraviloPlusCetiri_1 = require("../Moduli pravila/PraviloPlusCetiri");
-var PraviloWildMysteryBoja_1 = require("../Moduli pravila/PraviloWildMysteryBoja");
-var PreskociPravilo_1 = require("../Moduli pravila/PreskociPravilo");
-var PraviloPlusDva_1 = require("../Moduli pravila/PraviloPlusDva");
-var PraviloObrni_1 = require("../Moduli pravila/PraviloObrni");
+const PraviloNevalidanPotez_1 = require("../Moduli pravila/PraviloNevalidanPotez");
+const PraviloNormalnaVrednost_1 = require("../Moduli pravila/PraviloNormalnaVrednost");
+const PraviloPlusCetiri_1 = require("../Moduli pravila/PraviloPlusCetiri");
+const PraviloWildMysteryBoja_1 = require("../Moduli pravila/PraviloWildMysteryBoja");
+const PreskociPravilo_1 = require("../Moduli pravila/PreskociPravilo");
+const PraviloPlusDva_1 = require("../Moduli pravila/PraviloPlusDva");
+const PraviloObrni_1 = require("../Moduli pravila/PraviloObrni");
 /**
  * 0 => invaild move
  * 1 => normal value on value move
@@ -16,8 +16,8 @@ var PraviloObrni_1 = require("../Moduli pravila/PraviloObrni");
  * 5 => wild mystery color
  * 6 => +4
  */
-var SelektorPravila = /** @class */ (function () {
-    function SelektorPravila() {
+class SelektorPravila {
+    constructor() {
         this.funkcijskaPravila = new Array();
         this.funkcijskaPravila.push(PraviloNevalidanPotez_1.praviloNevalidanPotez);
         this.funkcijskaPravila.push(PraviloNormalnaVrednost_1.praviloNormalnaVrednost);
@@ -27,6 +27,5 @@ var SelektorPravila = /** @class */ (function () {
         this.funkcijskaPravila.push(PraviloWildMysteryBoja_1.praviloWildBoja);
         this.funkcijskaPravila.push(PraviloPlusCetiri_1.praviloPlusCetiri);
     }
-    return SelektorPravila;
-}());
+}
 exports.default = SelektorPravila;

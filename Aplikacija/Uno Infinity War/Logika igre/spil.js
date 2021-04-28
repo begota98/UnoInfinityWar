@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var karta_1 = __importDefault(require("./karta"));
-var Spil = /** @class */ (function () {
-    function Spil() {
+const karta_1 = __importDefault(require("./karta"));
+class Spil {
+    constructor() {
         /**
         *
         * 8 wild karata, 1 => +4, 2 => mystery
@@ -15,17 +15,17 @@ var Spil = /** @class */ (function () {
         **/
         this.boje = ["red", "yellow", "blue", "green"];
     }
-    Spil.prototype.generisiNeSpecijalanIndex = function () {
+    generisiNeSpecijalanIndex() {
         return Math.floor(Math.random() * 10);
-    };
-    Spil.prototype.generisiSpecijalanIndex = function () {
+    }
+    generisiSpecijalanIndex() {
         return Math.floor(Math.random() * 3) + 1;
-    };
-    Spil.prototype.vuciKartu = function () {
-        var random = Math.random();
-        var vrednost = undefined;
-        var specijalna = false;
-        var boja = undefined;
+    }
+    vuciKartu() {
+        let random = Math.random();
+        let vrednost = undefined;
+        let specijalna = false;
+        let boja = undefined;
         if (random < 0.5) {
             random = Math.random();
             specijalna = true;
@@ -50,18 +50,17 @@ var Spil = /** @class */ (function () {
             }
         }
         return new karta_1.default(vrednost, boja, specijalna);
-    };
-    Spil.prototype.vuciNeSpecijalnuKartu = function () {
-        var random = Math.random();
-        var vrednost = undefined;
-        var specijalna = false;
-        var boja = undefined;
+    }
+    vuciNeSpecijalnuKartu() {
+        let random = Math.random();
+        let vrednost = undefined;
+        let specijalna = false;
+        let boja = undefined;
         random = Math.floor(Math.random() * 3.99);
         boja = this.boje[random];
         specijalna = false;
         vrednost = this.generisiNeSpecijalanIndex();
         return new karta_1.default(vrednost, boja, specijalna);
-    };
-    return Spil;
-}());
+    }
+}
 exports.default = Spil;

@@ -1,8 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var IPravilo = /** @class */ (function () {
-    function IPravilo() {
-    }
-    return IPravilo;
-}());
+class IPravilo {
+}
 exports.default = IPravilo;

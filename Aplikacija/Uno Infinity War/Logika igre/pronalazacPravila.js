@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var PraviloNevalidanPotez_1 = require("../Moduli pravila/PraviloNevalidanPotez");
-var PraviloNormalnaVrednost_1 = require("../Moduli pravila/PraviloNormalnaVrednost");
-var PraviloPlusCetiri_1 = require("../Moduli pravila/PraviloPlusCetiri");
-var PraviloWildMysteryBoja_1 = require("../Moduli pravila/PraviloWildMysteryBoja");
-var PreskociPravilo_1 = require("../Moduli pravila/PreskociPravilo");
-var PraviloPlusDva_1 = require("../Moduli pravila/PraviloPlusDva");
-var PraviloObrni_1 = require("../Moduli pravila/PraviloObrni");
+const PraviloNevalidanPotez_1 = require("../Moduli pravila/PraviloNevalidanPotez");
+const PraviloNormalnaVrednost_1 = require("../Moduli pravila/PraviloNormalnaVrednost");
+const PraviloPlusCetiri_1 = require("../Moduli pravila/PraviloPlusCetiri");
+const PraviloWildMysteryBoja_1 = require("../Moduli pravila/PraviloWildMysteryBoja");
+const PreskociPravilo_1 = require("../Moduli pravila/PreskociPravilo");
+const PraviloPlusDva_1 = require("../Moduli pravila/PraviloPlusDva");
+const PraviloObrni_1 = require("../Moduli pravila/PraviloObrni");
 /**
  * 0 => nevalidan potez
  * 1 => normalna vrednost
@@ -16,8 +16,8 @@ var PraviloObrni_1 = require("../Moduli pravila/PraviloObrni");
  * 5 => wild mystery boja
  * 6 => +4
  **/
-var PronalazacPravila = /** @class */ (function () {
-    function PronalazacPravila(karta1, karta2, trenutnaBoja) {
+class PronalazacPravila {
+    constructor(karta1, karta2, trenutnaBoja) {
         this.errorPravila = new Array();
         this.normalnaPravila = new Array();
         this.karta1 = karta1;
@@ -33,25 +33,22 @@ var PronalazacPravila = /** @class */ (function () {
         this.normalnaPravila.push(new PraviloWildMysteryBoja_1.ProveriWildBojuPravilo(this));
         this.normalnaPravila.push(new PraviloPlusCetiri_1.ProveriPlusCetiriPravilo(this));
     }
-    PronalazacPravila.prototype.vratiPravilo = function () {
-        var rezultatError;
-        for (var _i = 0, _a = this.errorPravila; _i < _a.length; _i++) {
-            var errPravilo = _a[_i];
+    vratiPravilo() {
+        let rezultatError;
+        for (let errPravilo of this.errorPravila) {
             rezultatError = errPravilo.OdrediPravilo();
             if (rezultatError != 0) {
                 return 0;
             }
         }
-        var rezultatNormalno;
-        for (var _b = 0, _c = this.normalnaPravila; _b < _c.length; _b++) {
-            var pravilo = _c[_b];
+        let rezultatNormalno;
+        for (let pravilo of this.normalnaPravila) {
             rezultatNormalno = pravilo.OdrediPravilo();
             if (rezultatNormalno != 0) {
                 return rezultatNormalno;
             }
         }
         return 0;
-    };
-    return PronalazacPravila;
-}());
+    }
+}
 exports.default = PronalazacPravila;
