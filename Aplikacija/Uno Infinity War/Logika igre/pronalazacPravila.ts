@@ -17,6 +17,9 @@ import { ProveriObrniPravilo } from '../Moduli pravila/PraviloObrni';
  * 5 => wild mystery boja
  * 6 => +4
  **/
+
+
+ //rule pattern, na onsovu tekuceg stanja odredjuje sta se dalje treba primeniti
 class PronalazacPravila {
   karta1: Karta;
   karta2: Karta;
@@ -45,6 +48,7 @@ class PronalazacPravila {
   
   vratiPravilo() 
   {
+    //prvo proveri da li je nastala greska
     let rezultatError: number
     for (let errPravilo of this.errorPravila) 
     {
@@ -54,6 +58,8 @@ class PronalazacPravila {
         return 0;
       }
     }
+
+    //u suprotnom, prodje kroz ostala moguca pravila, i ako je neko zadovoljeno signalizira na dalje tu informaciju kako bi se preduzele dalje akcije
     let rezultatNormalno:number;
     for (let pravilo of this.normalnaPravila)
     {

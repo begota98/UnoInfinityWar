@@ -5,6 +5,7 @@ import { obavestiPreskoci } from "../Moduli pravila/PreskociPravilo";
 import { obavestiObrni } from "../Moduli pravila/PraviloObrni";
 import { obavestiZavrsetak } from "../Moduli pravila/ObavestiZavrsetak";
 
+//klasa koja sadrzi strategy, u nju se ubace funkcije(algoritmi) za obavestavanje korisnika u slucaju nastanka razlicitih dogadjaja
 class ObavestavacKorisnika
 {
     nizObavestavaca: Array<any> = new Array<any>();

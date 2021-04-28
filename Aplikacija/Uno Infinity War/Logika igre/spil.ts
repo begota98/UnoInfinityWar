@@ -1,12 +1,8 @@
 import Karta from './karta';
+
+//klasa koja predstavlja apstraktni spil, odnosno na osnovu verovatnoce generise sledecu kartu
 class Spil {
-  /**
-  *
-  * 8 wild karata, 1 => +4, 2 => mystery
-  * 25 karata po svakoj od 4 boje => 0-9 numbers,2 preskoci, 2 okreni, 2 plus2, 3 akcione karte
-  * 1 => preskoci, 2 => +2, 3 => okreni 
-  * 
-  **/
+  
   boje: Array<string> = [ "red", "yellow", "blue", "green"];
   generisiNeSpecijalanIndex()
   {
@@ -22,7 +18,7 @@ class Spil {
     let specijalna: boolean = false;
     let boja: string = undefined;
 
-    if (random < 0.5) 
+    if (random < 0.2) 
     {
       random = Math.random();
       specijalna = true;
@@ -55,6 +51,7 @@ class Spil {
     return new Karta(vrednost,boja,specijalna);
   }
 
+    //da izvucemo na pocetku kartu koja nije specijalna (prilikom kreiranja igre)
   vuciNeSpecijalnuKartu(): Karta
   {
     let random:number = Math.random();

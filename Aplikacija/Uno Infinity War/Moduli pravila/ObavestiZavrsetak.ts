@@ -1,3 +1,6 @@
+
+//ukoliko je doslo do kraja igre, obavestavac ce ovu funkciju da pozove
+
 var obavestiZavrsetak = async function (rezultat,io, igra, podaci, igraKontroler)
 {
     igra.zavrsenaIgra=1;

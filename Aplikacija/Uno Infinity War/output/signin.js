@@ -31,6 +31,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   });
 
+  //observer
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       socket.emit("loggedIn", {

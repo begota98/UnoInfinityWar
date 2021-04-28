@@ -1,13 +1,14 @@
 import IPravilo from "./IPravilo";
 import PronalazacPravila from "../Logika igre/pronalazacPravila";
 
-
+// sta se desava ako je nastao nevalidan potez
 var praviloNevalidanPotez = async function (igra, pointerNaIgru)
 {
     return 0;
 }
 
 
+// klase koje nasledjuju apstraktnu IPravilo, sadrze razlicite algoritme (strategy) koji pokusavaju da detektuju na osnovu odigranog poteza koje pravilo se treba primeniti
 class ProveriNevalidnostJedan extends IPravilo
 {
   _pronalazacPravila: PronalazacPravila;

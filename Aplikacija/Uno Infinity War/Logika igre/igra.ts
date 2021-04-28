@@ -9,11 +9,12 @@ class Igra {
    spil: Spil = new Spil();
    selektorPravila: SelektorPravila = new SelektorPravila();
 
+    //kada host odabere da pokrene igra, zovemo funkciju kreirajIgru koja inicijalizuje potrebne stavke, i cuva sve u bazu
   async kreirajIgru(igraId: mongoose.Types.ObjectId, igraci: Array<Igrac>) 
   {
     const brojIgraca = igraci.length;
     if (brojIgraca < 2) 
-      throw new Error("Nemozete poceti partiju sa manje od 2 igraca!");
+      throw new Error("Ne mozete poceti partiju sa manje od 2 igraca!");
     const igra = await igraModel.findById(igraId);
     for (let i = 0; i < brojIgraca; i++)
     {
@@ -33,6 +34,8 @@ class Igra {
     await igra.save();
     return igra;
   }
+
+  //kada jedan igrac zavrsi potez, zove se ova funkcija
   sledeciPotez(igra) 
   {
     igra.igraci[igra.igracNaPotezu].izvucenihKarata = 0;
@@ -47,6 +50,7 @@ class Igra {
       else 
         igra.igracNaPotezu = (igra.igracNaPotezu + 1) % igra.brojIgraca;
     }
+    //ne moze da zavrsi slededeci igrac dok ne odigra kartu ili izvuce maximum dve karte pa preskoci potez
     igra.igraci[igra.igracNaPotezu].mozeDaZavrsi = false;
 
     
@@ -70,6 +74,9 @@ class Igra {
    * 6 => obrni
    * 7 => kraj igre
    */
+
+
+   //kada korisnik klikne na neku kartu da odigra potez
   async odigraj(igraId: mongoose.Types.ObjectId, indexIgraca: Number, indexKarte: number, karta: Karta, idIgraca:string) 
   {
     const igra = await igraModel.findById(igraId);
@@ -78,8 +85,14 @@ class Igra {
       return -1;
     }
     igra.igraci[igra.igracNaPotezu].izvucenihKarata = 0;
+
+    //on zakljucuje koje pravilo ce biti primenjeno, na osnvu karte na tavli, odigrane karte i boje koja se zahteva
     let pravilo: PronalazacPravila = new PronalazacPravila(igra.trenutnaKarta, karta,igra.trenutnaBoja);
+
+    //detektovano pravilo koje se primenjuje
     let brojPravila: number = pravilo.vratiPravilo();
+    
+    //pogresan potez
     if (!brojPravila)
     { 
       return 0;
@@ -89,17 +102,23 @@ class Igra {
     igra.trenutnaBoja = karta.boja;
     igra.trenutnaKarta = karta;
     this.ukloniKartu(igra,indexKarte);
+
+    //posto nema vise karata u ruci, kraj igre
     if (igra.igraci[igra.igracNaPotezu].karte.length == 0) 
     {
       await igra.save();
       return 7;
     }
     
+    //ako je potez validan, a nije se doslo do kraja igre, primenjuje se detektovano pravilo, u izvrsiocu pravila
     let izvrsilacPravila = this.selektorPravila.funkcijskaPravila[brojPravila];
+
+    //izvrsilac javlja serveru sta se desilo, kako bi server mogao da obavesti igrace
     return izvrsilacPravila(igra,this);
     
   }
 
+  //zove se kada korisnik odabere novu boju
   async promeniTrenutnuBoju(igraId: mongoose.Types.ObjectId, boja: string, indexIgraca:number, idIgraca:string) 
   {
     const igra = await igraModel.findById(igraId);
@@ -115,6 +134,7 @@ class Igra {
     return 0;
   }
 
+  //kada se vuce nova karta zbog neke specijalne karte ili korisnik sam zatrazi da izvuce novu kartu
   async vuciKartu(igraId: mongoose.Types.ObjectId, indexIgraca: number, idIgraca: string) 
   {
     const igra = await igraModel.findById(igraId);
@@ -129,34 +149,7 @@ class Igra {
     await igra.save();
     return 1;    
   }
-  async revans(igra) {
-    const brojIgraca = igra.igraci.length;
-    if (brojIgraca < 2) 
-      throw new Error("Nemozete poceti partiju sa manje od 2 igraca!");
-    for (let i = 0; i < brojIgraca; i++)
-    {
-      igra.igraci[i].karte = [];
-      igra.igraci[i].izvucenihKarata = 0;
-      igra.igraci[i].mozeDaZavrsi = false;
-      igra.igraci[i].score = 0;
-
-      // izvlacenje 7 karata za svakog igraca
-      for (let j = 0; j < 7; j++)
-      {
-        let karta: Karta = this.spil.vuciKartu();
-        igra.igraci[i].karte.push(karta);
-      }
-    }
-    // inicijalizacija pocetne karte na stolu
-    igra.trenutnaKarta = this.spil.vuciNeSpecijalnuKartu();
-    igra.trenutnaBoja = igra.trenutnaKarta.boja;
-    igra.pocelaIgra = true;
-    igra.brojIgraca = igra.igraci.length;
-    igra.obrnutRedosled = false;
-    igra.igracNaPotezu = 0;
-    await igra.save();
-    return igra;
-  }
+  
 }
 
 export default Igra;

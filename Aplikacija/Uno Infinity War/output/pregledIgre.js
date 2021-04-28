@@ -38,6 +38,8 @@ window.addEventListener("DOMContentLoaded", () => {
         var prethodni = document.getElementById("111");
         var sledeci = document.getElementById("222");
 
+
+        //command pattern
         
         function incIndex(x, y) { 
           if(x>=y-1)
@@ -49,6 +51,9 @@ window.addEventListener("DOMContentLoaded", () => {
             return 0;
           return x-1;
         }
+
+        //poslednji==bool promenljiva da li je potez poslednji
+        //potez koj mu se prosledi prikazuje na tablu
         function exc(trenutniPotez, poslednji) { 
           document.querySelector(".board").innerHTML="";
           let tablaPom= new TablaFrontend(trenutniPotez.karta,"animated");

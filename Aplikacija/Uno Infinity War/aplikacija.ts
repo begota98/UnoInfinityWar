@@ -22,7 +22,7 @@ const PORT = 3000;
 const server = http.createServer(aplikacija);
 mongoose.connect(process.env.CONNECTION_STRING, { useNewUrlParser: true });
 mongoose.connection.once("open", () => {
-  console.log("KONEKTOVAN NA BAZU PODATAKA :" + process.env.CONNECTION_STRING);
+  console.log("KONEKTOVAN NA BAZU PODATAKA :  " + process.env.CONNECTION_STRING);
 });
 aplikacija.use(cors());
 aplikacija.use(express.static("output"));
@@ -355,53 +355,14 @@ io.on("connection", (socket) => {
         }
       }
 
+      //(strategy) na osnovu pronadjenog pravila obavestavamo korisnika sta se desilo
       let obavestavacKorisnika: ObavestavacKorisnika = new ObavestavacKorisnika();
 
       if (isPlayed > 1)
       {
         obavestavacKorisnika.obavesti(isPlayed, io, igra, podaci, igraKontroler)
       }
-      // console.log(igra.igraci[igra.igracNaPotezu]);
-
-      // if (isPlayed == 2) {
-      //   io.to(igra.igraci[igra.igracNaPotezu].socketId).emit("vuciDve", {
-      //     idPartije: podaci.idPartije,
-      //   });
-      // } else if (isPlayed == 3) {
-      //   io.sockets.emit("odaberiteBoju", {
-      //     idPartije: podaci.idPartije,
-      //     indexIgraca: podaci.indexIgraca,
-      //     idIgraca: igra.igraci[podaci.indexIgraca].idIgraca,
-      //   });
-      // } else if (isPlayed == 4) {
-      //   io.sockets.emit("odaberiteBoju", {
-      //     idPartije: podaci.idPartije,
-      //     indexIgraca: podaci.indexIgraca,
-      //     idIgraca: igra.igraci[podaci.indexIgraca].idIgraca,
-      //   });
-      //   igraKontroler.sledeciPotez(igra);
-      //   io.to(igra.igraci[igra.igracNaPotezu].socketId).emit("vuciCetiri", {
-      //     idPartije: podaci.idPartije,
-      //   });
-      //   igra.obrnutRedosled = !igra.obrnutRedosled;
-      //   igraKontroler.sledeciPotez(igra);
-      //   igra.obrnutRedosled = !igra.obrnutRedosled;
-      // } else if (isPlayed == 5) {
-      //   io.sockets.emit("preskakanjeIgraca", {
-      //     idPartije: podaci.idPartije,
-      //   });
-      // } else if (isPlayed == 6) {
-      //   io.sockets.emit("promenaSmeraPartije", {
-      //     idPartije: podaci.idPartije,
-      //   });
-      // } else if (isPlayed == 7) {
-      //   io.sockets.emit("zavrsetakPartije", {
-      //     idPartije: podaci.idPartije,
-      //     indeks: podaci.indexIgraca,
-      //     idIgraca: podaci.idIgraca,
-      //     success: "Kraj igre",
-      //   });
-      // }
+      
     } catch (err) {
       socket.emit("greska", { poruka: err.message });
     }
