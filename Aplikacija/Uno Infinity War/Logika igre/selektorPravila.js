@@ -8,14 +8,15 @@ const PreskociPravilo_1 = require("../Moduli pravila/PreskociPravilo");
 const PraviloPlusDva_1 = require("../Moduli pravila/PraviloPlusDva");
 const PraviloObrni_1 = require("../Moduli pravila/PraviloObrni");
 /**
- * 0 => invaild move
- * 1 => normal value on value move
+ * 0 => nevalidan potez
+ * 1 => normalna vrednost (broj na broj)
  * 2 => +2
- * 3 => skip
- * 4 => reverse
- * 5 => wild mystery color
- * 6 => +4
+ * 3 => preskoci
+ * 4 => okreni redosled
+ * 5 => promena boje
+ * 6 => promena boje i plus 4
  */
+//kontejner za algoritme koji se primenjuju u zavisnosti od detektovane akcije iz pronalazaca
 class SelektorPravila {
     constructor() {
         this.funkcijskaPravila = new Array();

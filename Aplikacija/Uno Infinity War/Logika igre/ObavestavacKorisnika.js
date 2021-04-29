@@ -7,6 +7,7 @@ const PraviloPlusCetiri_1 = require("../Moduli pravila/PraviloPlusCetiri");
 const PreskociPravilo_1 = require("../Moduli pravila/PreskociPravilo");
 const PraviloObrni_1 = require("../Moduli pravila/PraviloObrni");
 const ObavestiZavrsetak_1 = require("../Moduli pravila/ObavestiZavrsetak");
+//klasa koja sadrzi strategy, u nju se ubace funkcije(algoritmi) za obavestavanje korisnika u slucaju nastanka razlicitih dogadjaja
 class ObavestavacKorisnika {
     constructor() {
         this.nizObavestavaca = new Array();

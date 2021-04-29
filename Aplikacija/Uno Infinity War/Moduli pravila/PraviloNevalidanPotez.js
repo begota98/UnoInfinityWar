@@ -14,12 +14,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProveriNevalidnostTri = exports.ProveriNevalidnostDva = exports.ProveriNevalidnostJedan = exports.praviloNevalidanPotez = void 0;
 const IPravilo_1 = __importDefault(require("./IPravilo"));
+// sta se desava ako je nastao nevalidan potez
 var praviloNevalidanPotez = function (igra, pointerNaIgru) {
     return __awaiter(this, void 0, void 0, function* () {
         return 0;
     });
 };
 exports.praviloNevalidanPotez = praviloNevalidanPotez;
+// klase koje nasledjuju apstraktnu IPravilo, sadrze razlicite algoritme (strategy) koji pokusavaju da detektuju na osnovu odigranog poteza koje pravilo se treba primeniti
 class ProveriNevalidnostJedan extends IPravilo_1.default {
     constructor(pravilo) {
         super();

@@ -16,6 +16,7 @@ const PraviloObrni_1 = require("../Moduli pravila/PraviloObrni");
  * 5 => wild mystery boja
  * 6 => +4
  **/
+//rule pattern, na onsovu tekuceg stanja odredjuje sta se dalje treba primeniti
 class PronalazacPravila {
     constructor(karta1, karta2, trenutnaBoja) {
         this.errorPravila = new Array();
@@ -34,6 +35,7 @@ class PronalazacPravila {
         this.normalnaPravila.push(new PraviloPlusCetiri_1.ProveriPlusCetiriPravilo(this));
     }
     vratiPravilo() {
+        //prvo proveri da li je nastala greska
         let rezultatError;
         for (let errPravilo of this.errorPravila) {
             rezultatError = errPravilo.OdrediPravilo();
@@ -41,6 +43,7 @@ class PronalazacPravila {
                 return 0;
             }
         }
+        //u suprotnom, prodje kroz ostala moguca pravila, i ako je neko zadovoljeno signalizira na dalje tu informaciju kako bi se preduzele dalje akcije
         let rezultatNormalno;
         for (let pravilo of this.normalnaPravila) {
             rezultatNormalno = pravilo.OdrediPravilo();

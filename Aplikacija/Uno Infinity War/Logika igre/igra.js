@@ -21,11 +21,12 @@ class Igra {
         this.spil = new spil_1.default();
         this.selektorPravila = new selektorPravila_1.default();
     }
+    //kada host odabere da pokrene igra, zovemo funkciju kreirajIgru koja inicijalizuje potrebne stavke, i cuva sve u bazu
     kreirajIgru(igraId, igraci) {
         return __awaiter(this, void 0, void 0, function* () {
             const brojIgraca = igraci.length;
             if (brojIgraca < 2)
-                throw new Error("Nemozete poceti partiju sa manje od 2 igraca!");
+                throw new Error("Ne mozete poceti partiju sa manje od 2 igraca!");
             const igra = yield db_model_1.igraModel.findById(igraId);
             for (let i = 0; i < brojIgraca; i++) {
                 // izvlacenje 7 karata za svakog igraca
@@ -44,6 +45,7 @@ class Igra {
             return igra;
         });
     }
+    //kada jedan igrac zavrsi potez, zove se ova funkcija
     sledeciPotez(igra) {
         igra.igraci[igra.igracNaPotezu].izvucenihKarata = 0;
         igra.igraci[igra.igracNaPotezu].mozeDaZavrsi = false;
@@ -55,6 +57,7 @@ class Igra {
             else
                 igra.igracNaPotezu = (igra.igracNaPotezu + 1) % igra.brojIgraca;
         }
+        //ne moze da zavrsi slededeci igrac dok ne odigra kartu ili izvuce maximum dve karte pa preskoci potez
         igra.igraci[igra.igracNaPotezu].mozeDaZavrsi = false;
     }
     dodajKartu(igra, karta) {
@@ -74,6 +77,7 @@ class Igra {
      * 6 => obrni
      * 7 => kraj igre
      */
+    //kada korisnik klikne na neku kartu da odigra potez
     odigraj(igraId, indexIgraca, indexKarte, karta, idIgraca) {
         return __awaiter(this, void 0, void 0, function* () {
             const igra = yield db_model_1.igraModel.findById(igraId);
@@ -81,8 +85,11 @@ class Igra {
                 return -1;
             }
             igra.igraci[igra.igracNaPotezu].izvucenihKarata = 0;
+            //on zakljucuje koje pravilo ce biti primenjeno, na osnvu karte na tavli, odigrane karte i boje koja se zahteva
             let pravilo = new pronalazacPravila_1.default(igra.trenutnaKarta, karta, igra.trenutnaBoja);
+            //detektovano pravilo koje se primenjuje
             let brojPravila = pravilo.vratiPravilo();
+            //pogresan potez
             if (!brojPravila) {
                 return 0;
             }
@@ -90,14 +97,18 @@ class Igra {
             igra.trenutnaBoja = karta.boja;
             igra.trenutnaKarta = karta;
             this.ukloniKartu(igra, indexKarte);
+            //posto nema vise karata u ruci, kraj igre
             if (igra.igraci[igra.igracNaPotezu].karte.length == 0) {
                 yield igra.save();
                 return 7;
             }
+            //ako je potez validan, a nije se doslo do kraja igre, primenjuje se detektovano pravilo, u izvrsiocu pravila
             let izvrsilacPravila = this.selektorPravila.funkcijskaPravila[brojPravila];
+            //izvrsilac javlja serveru sta se desilo, kako bi server mogao da obavesti igrace
             return izvrsilacPravila(igra, this);
         });
     }
+    //zove se kada korisnik odabere novu boju
     promeniTrenutnuBoju(igraId, boja, indexIgraca, idIgraca) {
         return __awaiter(this, void 0, void 0, function* () {
             const igra = yield db_model_1.igraModel.findById(igraId);
@@ -115,6 +126,7 @@ class Igra {
             return 0;
         });
     }
+    //kada se vuce nova karta zbog neke specijalne karte ili korisnik sam zatrazi da izvuce novu kartu
     vuciKartu(igraId, indexIgraca, idIgraca) {
         return __awaiter(this, void 0, void 0, function* () {
             const igra = yield db_model_1.igraModel.findById(igraId);
@@ -128,33 +140,6 @@ class Igra {
                 igra.igraci[indexIgraca].mozeDaZavrsi = true;
             yield igra.save();
             return 1;
-        });
-    }
-    revans(igra) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const brojIgraca = igra.igraci.length;
-            if (brojIgraca < 2)
-                throw new Error("Nemozete poceti partiju sa manje od 2 igraca!");
-            for (let i = 0; i < brojIgraca; i++) {
-                igra.igraci[i].karte = [];
-                igra.igraci[i].izvucenihKarata = 0;
-                igra.igraci[i].mozeDaZavrsi = false;
-                igra.igraci[i].score = 0;
-                // izvlacenje 7 karata za svakog igraca
-                for (let j = 0; j < 7; j++) {
-                    let karta = this.spil.vuciKartu();
-                    igra.igraci[i].karte.push(karta);
-                }
-            }
-            // inicijalizacija pocetne karte na stolu
-            igra.trenutnaKarta = this.spil.vuciNeSpecijalnuKartu();
-            igra.trenutnaBoja = igra.trenutnaKarta.boja;
-            igra.pocelaIgra = true;
-            igra.brojIgraca = igra.igraci.length;
-            igra.obrnutRedosled = false;
-            igra.igracNaPotezu = 0;
-            yield igra.save();
-            return igra;
         });
     }
 }

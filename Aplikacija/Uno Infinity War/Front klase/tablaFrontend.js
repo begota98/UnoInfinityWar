@@ -1,10 +1,10 @@
 
 
-var TablaFrontend = function (trenutnaKarta, dodatnaKlasa)
+var TablaFrontend = function (trenutnaKarta)
 {
   
     this.trenutnaKarta = trenutnaKarta;
-    this.dodatnaKlasa = dodatnaKlasa;
+    
   
 
   this.renderujTablu = function(destination) 
@@ -12,7 +12,7 @@ var TablaFrontend = function (trenutnaKarta, dodatnaKlasa)
     let parent = destination;
     let div = document.createElement("div");
     div.className = " board-card ";
-    div.className += this.dodatnaKlasa ? this.dodatnaKlasa : "";
+    
     parent.appendChild(div);
     let karta = new KartaFrontend(this.trenutnaKarta,0);
     parent = div;
